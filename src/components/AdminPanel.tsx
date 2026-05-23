@@ -68,6 +68,25 @@ async function sha256(message: string): Promise<string> {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
+// Monthly upload limit
+const MONTHLY_UPLOAD_LIMIT = 30;
+
+function getMonthKey(): string {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+}
+
+function getMonthlyUploadCount(): number {
+  const key = `aradhna_uploads_${getMonthKey()}`;
+  return parseInt(localStorage.getItem(key) || '0', 10);
+}
+
+function incrementMonthlyUploadCount(): void {
+  const key = `aradhna_uploads_${getMonthKey()}`;
+  const current = getMonthlyUploadCount();
+  localStorage.setItem(key, String(current + 1));
+}
+
 export const AdminPanel: React.FC<AdminPanelProps> = ({
   rates,
   setRates,
@@ -111,6 +130,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [settingsPopupAdLink, setSettingsPopupAdLink] = useState(settings?.popupAdLink || '');
   
   const [settingsUpdatedMsg, setSettingsUpdatedMsg] = useState(false);
+
+  // Monthly upload quota
+  const [monthlyUploads, setMonthlyUploads] = useState(getMonthlyUploadCount());
+  const uploadsRemaining = MONTHLY_UPLOAD_LIMIT - monthlyUploads;
+  const isUploadLimitReached = uploadsRemaining <= 0;
 
   // Product CRUD modal state
   const [showProductModal, setShowProductModal] = useState(false);
@@ -311,6 +335,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   };
 
   const openAddProduct = () => {
+    if (isUploadLimitReached) return;
     setEditingProduct(null);
     setProdTitle('');
     setProdCode('SAA-' + Math.floor(1000 + Math.random() * 9000));
@@ -357,7 +382,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     if (editingProduct) {
       onUpdateProduct(prodData);
     } else {
+      if (isUploadLimitReached) return;
       onAddProduct(prodData);
+      incrementMonthlyUploadCount();
+      setMonthlyUploads(getMonthlyUploadCount());
     }
     
     setShowProductModal(false);
@@ -481,6 +509,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 <div className="admin-stat-title">Customer Messages</div>
                 <div className="admin-stat-value">{contactMessages.length} Submissions</div>
               </div>
+              <div className="admin-stat-card" style={{ borderColor: isUploadLimitReached ? 'var(--color-error)' : 'var(--color-accent-gold)' }}>
+                <div className="admin-stat-title">Monthly Upload Quota</div>
+                <div className="admin-stat-value" style={{ color: isUploadLimitReached ? 'var(--color-error)' : 'var(--color-accent-gold)' }}>
+                  {monthlyUploads} / {MONTHLY_UPLOAD_LIMIT}
+                </div>
+                <div style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
+                  {isUploadLimitReached ? 'Limit reached — resets next month' : `${uploadsRemaining} uploads remaining`}
+                </div>
+              </div>
             </div>
 
             <div className="calc-card" style={{ maxWidth: '100%', margin: 0 }}>
@@ -601,10 +638,41 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           <div>
             <div className="admin-toolbar">
               <h2 className="headline-sm">Product Inventory</h2>
-              <button className="btn-primary" onClick={openAddProduct}>
-                <Plus size={16} /> Add Product
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <span style={{
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  padding: '6px 14px',
+                  borderRadius: '20px',
+                  backgroundColor: isUploadLimitReached ? 'rgba(255,180,171,0.15)' : 'rgba(247,240,17,0.1)',
+                  color: isUploadLimitReached ? 'var(--color-error)' : 'var(--color-accent-gold)',
+                  whiteSpace: 'nowrap'
+                }}>
+                  {monthlyUploads}/{MONTHLY_UPLOAD_LIMIT} this month
+                </span>
+                <button
+                  className="btn-primary"
+                  onClick={openAddProduct}
+                  disabled={isUploadLimitReached}
+                  style={isUploadLimitReached ? { opacity: 0.4, cursor: 'not-allowed' } : {}}
+                  title={isUploadLimitReached ? 'Monthly upload limit reached (30/month). Resets next month.' : 'Add a new product'}
+                >
+                  <Plus size={16} /> Add Product
+                </button>
+              </div>
             </div>
+            {isUploadLimitReached && (
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: '8px',
+                color: 'var(--color-error)',
+                backgroundColor: 'rgba(255,180,171,0.08)',
+                padding: '12px 16px', marginBottom: '20px',
+                fontSize: '13px', borderRadius: '8px'
+              }}>
+                <ShieldAlert size={16} />
+                <span>Monthly upload limit reached (<strong>{MONTHLY_UPLOAD_LIMIT} designs/month</strong>). You can still edit or delete existing products. The counter resets on the 1st of next month.</span>
+              </div>
+            )}
 
             <div style={{ overflowX: 'auto' }}>
               <table className="admin-table">
