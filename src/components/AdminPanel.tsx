@@ -55,6 +55,19 @@ interface AdminPanelProps {
   setSettings: (settings: AppSettings) => void;
 }
 
+// Pre-computed SHA-256 hashes of valid passcodes
+const VALID_HASHES = [
+  '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', // hash 1
+  'a0fe286ab0b8ea40618cb8aed498bfebe8a82bb3c39cefaa62e2fd85b736b155'  // hash 2
+];
+
+async function sha256(message: string): Promise<string> {
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 export const AdminPanel: React.FC<AdminPanelProps> = ({
   rates,
   setRates,
@@ -267,9 +280,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setTimeout(() => setSettingsUpdatedMsg(false), 3000);
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (passcode === 'admin123' || passcode === 'aradhna77') {
+    const hash = await sha256(passcode);
+    if (VALID_HASHES.includes(hash)) {
       setIsAuthenticated(true);
       localStorage.setItem('admin_authenticated', 'true');
       setLoginError('');
@@ -387,7 +401,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         </form>
         
         <span style={{ display: 'block', fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '24px' }}>
-          Hint: passcode is <strong>admin123</strong>
+          Contact administrator for access credentials.
         </span>
       </div>
     );
