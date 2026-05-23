@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from './lib/supabase';
 import { RateTicker } from './components/RateTicker';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
@@ -37,106 +38,165 @@ interface ContactMessage {
   timestamp: string;
 }
 
-// Initial mock products to seed the database (aligned with screenshot catalog highlights)
-const INITIAL_PRODUCTS: Product[] = [
-  {
-    id: '1',
-    title: 'Aura Solitaire Ring',
-    itemCode: 'SAA-4932',
-    category: 'rings',
-    purity: 'gold22k',
-    makingCharge: 12,
-    weight: 6.2,
-    imageUrl: '/ring.png',
-    description: 'A timeless classic, handcrafted in 22K gold featuring a brilliant round-cut solitaire diamond centerpiece, surrounded by architectural pavé settings.'
-  },
-  {
-    id: '2',
-    title: 'Royal Emerald Drop Earrings',
-    itemCode: 'SAA-7712',
-    category: 'earrings',
-    purity: 'gold18k',
-    makingCharge: 15,
-    weight: 11.5,
-    imageUrl: '/earrings.png',
-    description: 'Bespoke chandelier earrings featuring royal Colombian pear-cut emerald drops enveloped in detailed halo-cut diamonds.'
-  },
-  {
-    id: '3',
-    title: 'Antique Silver Kada',
-    itemCode: 'SAA-3109',
-    category: 'bangles',
-    purity: 'silver',
-    makingCharge: 8,
-    weight: 28.5,
-    imageUrl: '/bangles.png',
-    description: 'Traditional solid silver kada bangle displaying hand-forged antique engravings, rustic motifs, and vintage oxidized polish.'
-  },
-  {
-    id: '4',
-    title: 'Aura Signature Choker',
-    itemCode: 'SAA-8902',
-    category: 'necklaces',
-    purity: 'gold22k',
-    makingCharge: 14,
-    weight: 42.1,
-    imageUrl: '/hero_necklace.png',
-    description: 'The crowning piece of the Aura of Aradhna collection, featuring floating modular gold leaves adorned with micro-brilliant diamonds.'
-  }
-];
+// Default values (used as fallback if database is empty)
+const DEFAULT_RATES: Rates = {
+  gold22k: 66450,
+  gold18k: 54370,
+  silver: 84200,
+  goldChange: 'up',
+  silverChange: 'down'
+};
 
-// Initial mock messages
-const INITIAL_MESSAGES: ContactMessage[] = [
-  {
-    id: 'm1',
-    name: 'Aditya Birla',
-    email: 'aditya.birla@outlook.com',
-    phone: '+91 98210 54321',
-    message: 'I am interested in scheduling a private gallery consultation next Tuesday at 3 PM to view wedding sets. Please confirm advisor availability.',
-    timestamp: new Date(Date.now() - 3600000 * 2).toISOString() // 2 hours ago
-  }
-];
+const DEFAULT_SETTINGS: AppSettings = {
+  heroBannerUrl: '/hero_banner.jpg',
+  heroTitle: 'Eternal Heritage\nHandcrafted Brilliance',
+  heroSubtitle: 'Welcome to Shree Aradhna Jewellers. Explore our premium collection of 22KT gold, 18KT gold, and fine silver ornaments custom-crafted for timeless luxury.',
+  collectionsBridalImage: '',
+  collectionsDiamondImage: '',
+  collectionsSilverImage: '',
+  popupAdEnabled: false,
+  popupAdImage: '',
+  popupAdLink: ''
+};
 
 function App() {
   const [view, setView] = useState<'storefront' | 'admin'>('storefront');
+  const [loading, setLoading] = useState(true);
 
-  // Rates State (seed with rates matching user's screenshot)
-  const [rates, setRatesState] = useState<Rates>(() => {
-    const savedRates = localStorage.getItem('aradhna_rates_v3');
-    if (savedRates) {
-      return JSON.parse(savedRates);
-    }
-    return {
-      gold22k: 66450, // matches screenshot
-      gold18k: 54370, // standard market estimation relative to 22K
-      silver: 84200,  // matches screenshot
-      goldChange: 'up',
-      silverChange: 'down' // matches screenshot downward trend
-    };
-  });
+  // Rates State
+  const [rates, setRatesState] = useState<Rates>(DEFAULT_RATES);
 
-  // App Settings State (banner image & texts)
-  const [settings, setSettingsState] = useState<AppSettings>(() => {
-    const savedSettings = localStorage.getItem('aradhna_settings_v3');
-    if (savedSettings) {
-      return JSON.parse(savedSettings);
-    }
-    return {
-      heroBannerUrl: '/hero_banner.jpg',
-      heroTitle: 'Eternal Heritage\nHandcrafted Brilliance',
-      heroSubtitle: 'Welcome to Shree Aradhna Jewellers. Explore our premium collection of 22KT gold, 18KT gold, and fine silver ornaments custom-crafted for timeless luxury.',
-      collectionsBridalImage: '',
-      collectionsDiamondImage: '',
-      collectionsSilverImage: '',
-      popupAdEnabled: false,
-      popupAdImage: '',
-      popupAdLink: ''
-    };
-  });
+  // App Settings State
+  const [settings, setSettingsState] = useState<AppSettings>(DEFAULT_SETTINGS);
 
   // Announcement popup control state
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
+  // Products State
+  const [products, setProducts] = useState<Product[]>([]);
+
+  // WhatsApp click analytics state
+  const [inquiries, setInquiries] = useState<Inquiry[]>([]);
+
+  // Contact messages state
+  const [contactMessages, setContactMessages] = useState<ContactMessage[]>([]);
+
+  // Pre-filled contact message state
+  const [prefilledMessage, setPrefilledMessage] = useState('');
+
+  // Fetch all data from Supabase on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch rates
+        const { data: ratesData } = await supabase
+          .from('rates')
+          .select('*')
+          .order('updated_at', { ascending: false })
+          .limit(1)
+          .single();
+
+        if (ratesData) {
+          setRatesState({
+            gold22k: Number(ratesData.gold22k),
+            gold18k: Number(ratesData.gold18k),
+            silver: Number(ratesData.silver),
+            goldChange: ratesData.gold_change as 'up' | 'down',
+            silverChange: ratesData.silver_change as 'up' | 'down'
+          });
+        }
+
+        // Fetch products
+        const { data: productsData } = await supabase
+          .from('products')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (productsData && productsData.length > 0) {
+          setProducts(productsData.map(p => ({
+            id: p.id,
+            title: p.title,
+            itemCode: p.item_code,
+            category: p.category,
+            purity: p.purity,
+            makingCharge: Number(p.making_charge),
+            weight: Number(p.weight),
+            imageUrl: p.image_url || '',
+            description: p.description || ''
+          })));
+        }
+
+        // Fetch settings
+        const { data: settingsData } = await supabase
+          .from('settings')
+          .select('*');
+
+        if (settingsData && settingsData.length > 0) {
+          const settingsMap: Record<string, unknown> = {};
+          settingsData.forEach(s => {
+            settingsMap[s.key] = s.value;
+          });
+
+          const heroSettings = settingsMap.hero as Record<string, string> | undefined;
+          const collectionsSettings = settingsMap.collections as Record<string, string> | undefined;
+          const popupSettings = settingsMap.popup as Record<string, unknown> | undefined;
+
+          setSettingsState({
+            heroBannerUrl: heroSettings?.heroBannerUrl || DEFAULT_SETTINGS.heroBannerUrl,
+            heroTitle: heroSettings?.heroTitle || DEFAULT_SETTINGS.heroTitle,
+            heroSubtitle: heroSettings?.heroSubtitle || DEFAULT_SETTINGS.heroSubtitle,
+            collectionsBridalImage: collectionsSettings?.collectionsBridalImage || '',
+            collectionsDiamondImage: collectionsSettings?.collectionsDiamondImage || '',
+            collectionsSilverImage: collectionsSettings?.collectionsSilverImage || '',
+            popupAdEnabled: (popupSettings?.popupAdEnabled as boolean) || false,
+            popupAdImage: (popupSettings?.popupAdImage as string) || '',
+            popupAdLink: (popupSettings?.popupAdLink as string) || ''
+          });
+        }
+
+        // Fetch inquiries
+        const { data: inquiriesData } = await supabase
+          .from('inquiries')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (inquiriesData) {
+          setInquiries(inquiriesData.map(i => ({
+            id: i.id,
+            productTitle: i.product_title,
+            productCode: i.product_code,
+            timestamp: i.created_at
+          })));
+        }
+
+        // Fetch contact messages
+        const { data: messagesData } = await supabase
+          .from('contact_messages')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (messagesData) {
+          setContactMessages(messagesData.map(m => ({
+            id: m.id,
+            name: m.name,
+            email: m.email,
+            phone: m.phone,
+            message: m.message,
+            timestamp: m.created_at
+          })));
+        }
+
+      } catch (error) {
+        console.error('[v0] Error fetching data from Supabase:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Popup trigger
   useEffect(() => {
     if (settings.popupAdEnabled && settings.popupAdImage) {
       const dismissed = sessionStorage.getItem('aradhna_popup_dismissed');
@@ -151,74 +211,158 @@ function App() {
     sessionStorage.setItem('aradhna_popup_dismissed', 'true');
   };
 
-  // Products State
-  const [products, setProducts] = useState<Product[]>(() => {
-    const savedProducts = localStorage.getItem('aradhna_products_v3');
-    if (savedProducts) {
-      return JSON.parse(savedProducts);
-    }
-    return INITIAL_PRODUCTS;
-  });
-
-  // WhatsApp click analytics state
-  const [inquiries, setInquiries] = useState<Inquiry[]>(() => {
-    const savedInquiries = localStorage.getItem('aradhna_inquiries_v3');
-    return savedInquiries ? JSON.parse(savedInquiries) : [];
-  });
-
-  // Contact messages state
-  const [contactMessages, setContactMessages] = useState<ContactMessage[]>(() => {
-    const savedMessages = localStorage.getItem('aradhna_messages_v3');
-    return savedMessages ? JSON.parse(savedMessages) : INITIAL_MESSAGES;
-  });
-
-  // Pre-filled contact message state
-  const [prefilledMessage, setPrefilledMessage] = useState('');
-
-  // Persist rates changes
-  const setRates = (newRates: Rates) => {
+  // Update rates in Supabase
+  const setRates = useCallback(async (newRates: Rates) => {
     setRatesState(newRates);
-    localStorage.setItem('aradhna_rates_v3', JSON.stringify(newRates));
-  };
 
-  // Persist settings changes
-  const setSettings = (newSettings: AppSettings) => {
+    try {
+      // Get existing rate row
+      const { data: existingRate } = await supabase
+        .from('rates')
+        .select('id')
+        .limit(1)
+        .single();
+
+      if (existingRate) {
+        await supabase
+          .from('rates')
+          .update({
+            gold22k: newRates.gold22k,
+            gold18k: newRates.gold18k,
+            silver: newRates.silver,
+            gold_change: newRates.goldChange,
+            silver_change: newRates.silverChange,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', existingRate.id);
+      } else {
+        await supabase
+          .from('rates')
+          .insert({
+            gold22k: newRates.gold22k,
+            gold18k: newRates.gold18k,
+            silver: newRates.silver,
+            gold_change: newRates.goldChange,
+            silver_change: newRates.silverChange
+          });
+      }
+    } catch (error) {
+      console.error('[v0] Error updating rates:', error);
+    }
+  }, []);
+
+  // Update settings in Supabase
+  const setSettings = useCallback(async (newSettings: AppSettings) => {
     setSettingsState(newSettings);
-    localStorage.setItem('aradhna_settings_v3', JSON.stringify(newSettings));
-  };
 
-  // Sync products state with localStorage
-  useEffect(() => {
-    localStorage.setItem('aradhna_products_v3', JSON.stringify(products));
-  }, [products]);
+    try {
+      // Update hero settings
+      await supabase
+        .from('settings')
+        .upsert({
+          key: 'hero',
+          value: {
+            heroBannerUrl: newSettings.heroBannerUrl,
+            heroTitle: newSettings.heroTitle,
+            heroSubtitle: newSettings.heroSubtitle
+          },
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'key' });
 
-  // Sync inquiries with localStorage
-  useEffect(() => {
-    localStorage.setItem('aradhna_inquiries_v3', JSON.stringify(inquiries));
-  }, [inquiries]);
+      // Update collections settings
+      await supabase
+        .from('settings')
+        .upsert({
+          key: 'collections',
+          value: {
+            collectionsBridalImage: newSettings.collectionsBridalImage,
+            collectionsDiamondImage: newSettings.collectionsDiamondImage,
+            collectionsSilverImage: newSettings.collectionsSilverImage
+          },
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'key' });
 
-  // Sync messages with localStorage
-  useEffect(() => {
-    localStorage.setItem('aradhna_messages_v3', JSON.stringify(contactMessages));
-  }, [contactMessages]);
+      // Update popup settings
+      await supabase
+        .from('settings')
+        .upsert({
+          key: 'popup',
+          value: {
+            popupAdEnabled: newSettings.popupAdEnabled,
+            popupAdImage: newSettings.popupAdImage,
+            popupAdLink: newSettings.popupAdLink
+          },
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'key' });
 
-  // Product actions (CRUD)
-  const handleAddProduct = (newProd: Product) => {
+    } catch (error) {
+      console.error('[v0] Error updating settings:', error);
+    }
+  }, []);
+
+  // Product actions (CRUD) with Supabase
+  const handleAddProduct = useCallback(async (newProd: Product) => {
     setProducts(prev => [newProd, ...prev]);
-  };
 
-  const handleUpdateProduct = (updatedProd: Product) => {
+    try {
+      await supabase
+        .from('products')
+        .insert({
+          id: newProd.id,
+          title: newProd.title,
+          item_code: newProd.itemCode,
+          category: newProd.category,
+          purity: newProd.purity,
+          making_charge: newProd.makingCharge,
+          weight: newProd.weight,
+          image_url: newProd.imageUrl,
+          description: newProd.description
+        });
+    } catch (error) {
+      console.error('[v0] Error adding product:', error);
+    }
+  }, []);
+
+  const handleUpdateProduct = useCallback(async (updatedProd: Product) => {
     setProducts(prev => prev.map(p => p.id === updatedProd.id ? updatedProd : p));
-  };
 
-  const handleDeleteProduct = (id: string) => {
+    try {
+      await supabase
+        .from('products')
+        .update({
+          title: updatedProd.title,
+          item_code: updatedProd.itemCode,
+          category: updatedProd.category,
+          purity: updatedProd.purity,
+          making_charge: updatedProd.makingCharge,
+          weight: updatedProd.weight,
+          image_url: updatedProd.imageUrl,
+          description: updatedProd.description,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', updatedProd.id);
+    } catch (error) {
+      console.error('[v0] Error updating product:', error);
+    }
+  }, []);
+
+  const handleDeleteProduct = useCallback(async (id: string) => {
     if (window.confirm("Are you sure you want to remove this product from the catalog?")) {
       setProducts(prev => prev.filter(p => p.id !== id));
-    }
-  };
 
-  // Inquiry click logger
-  const handleInquireProduct = (product: Product) => {
+      try {
+        await supabase
+          .from('products')
+          .delete()
+          .eq('id', id);
+      } catch (error) {
+        console.error('[v0] Error deleting product:', error);
+      }
+    }
+  }, []);
+
+  // Inquiry click logger - save to Supabase
+  const handleInquireProduct = useCallback(async (product: Product) => {
     const newInquiry: Inquiry = {
       id: Date.now().toString(),
       productTitle: product.title,
@@ -226,17 +370,41 @@ function App() {
       timestamp: new Date().toISOString()
     };
     setInquiries(prev => [newInquiry, ...prev]);
-  };
 
-  // Contact submit logger
-  const handleSubmitMessage = (msg: { name: string; email: string; phone: string; message: string }) => {
+    try {
+      await supabase
+        .from('inquiries')
+        .insert({
+          product_title: product.title,
+          product_code: product.itemCode
+        });
+    } catch (error) {
+      console.error('[v0] Error logging inquiry:', error);
+    }
+  }, []);
+
+  // Contact submit logger - save to Supabase
+  const handleSubmitMessage = useCallback(async (msg: { name: string; email: string; phone: string; message: string }) => {
     const newMessage: ContactMessage = {
       id: Date.now().toString(),
       ...msg,
       timestamp: new Date().toISOString()
     };
     setContactMessages(prev => [newMessage, ...prev]);
-  };
+
+    try {
+      await supabase
+        .from('contact_messages')
+        .insert({
+          name: msg.name,
+          email: msg.email,
+          phone: msg.phone,
+          message: msg.message
+        });
+    } catch (error) {
+      console.error('[v0] Error submitting message:', error);
+    }
+  }, []);
 
   // prefill consultation requests
   const handleRequestConsultation = (product: Product) => {
@@ -246,6 +414,34 @@ function App() {
       contactSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text-primary)'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ 
+            width: '48px', 
+            height: '48px', 
+            border: '3px solid var(--color-border-subtle)',
+            borderTopColor: 'var(--color-accent-gold)',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 16px'
+          }} />
+          <p>Loading Shree Aradhna Jewellers...</p>
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
