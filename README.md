@@ -1,73 +1,113 @@
-# React + TypeScript + Vite
+# 💎 Shree Aradhna Jewellers
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A premium luxury jewellery storefront built with **React + TypeScript + Vite**.
 
-Currently, two official plugins are available:
+Live gold & silver rates • Product catalog with admin CRUD • WhatsApp inquiries • Fully responsive
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Feature | Description |
+|---|---|
+| **Live Market Rates** | Real-time 22KT, 18KT gold and 24KT silver prices via API |
+| **Product Catalog** | Browse jewellery with weight, making charges, and full price breakdown (incl. 3% GST) |
+| **Admin Panel** | Password-protected panel to manage products, banners, collection images, and popup ads |
+| **Dynamic Banners** | Upload and control hero banners and collection highlight images from admin settings |
+| **Announcement Popups** | Configurable promotional popups with session-based dismiss |
+| **WhatsApp Integration** | One-click WhatsApp inquiry with pre-filled product details |
+| **Mobile Responsive** | Fully responsive luxury UI optimized for all screen sizes |
+| **Price Breakdown** | Transparent invoice-style pricing: Base Metal + Making + GST |
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🚀 Quick Start
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+```bash
+# Install dependencies
+npm install
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+# Start development server
+npm run dev
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🌐 Deploy to Vercel
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+This project is **Vercel-ready** out of the box.
+
+### Option 1: Import from GitHub (Recommended)
+1. Go to [vercel.com/new](https://vercel.com/new)
+2. Import the GitHub repository: `aifuture2047-hue/SHREE-ARADHNA-JEWELLERS`
+3. Vercel will auto-detect the Vite framework
+4. Click **Deploy** — that's it!
+
+### Option 2: Vercel CLI
+```bash
+npm i -g vercel
+vercel
 ```
+
+The included `vercel.json` handles SPA routing automatically.
+
+---
+
+## 🔐 Admin Access
+
+Access the admin panel via the **"Admin Portal"** link in the footer.
+
+- **Passcode:** Set during first login
+- **Capabilities:** Manage products, update live rates, upload banners, configure popup ads
+
+---
+
+## 🛠 Tech Stack
+
+- **Framework:** React 19 + TypeScript
+- **Build Tool:** Vite
+- **Styling:** Vanilla CSS with custom properties
+- **Storage:** localStorage (client-side persistence)
+- **API:** Gold/Silver rate APIs for live pricing
+
+---
+
+## 📁 Project Structure
+
+```
+├── public/            # Static assets (images, favicon, icons)
+├── src/
+│   ├── components/    # React components
+│   │   ├── AdminPanel.tsx
+│   │   ├── AnnouncementPopup.tsx
+│   │   ├── ContactForm.tsx
+│   │   ├── Header.tsx
+│   │   ├── Hero.tsx
+│   │   ├── LiveMarketDashboard.tsx
+│   │   ├── LocationGallery.tsx
+│   │   ├── ProductCatalog.tsx
+│   │   ├── RateTicker.tsx
+│   │   └── WhatsAppFAB.tsx
+│   ├── App.tsx        # Main application with routing & state
+│   ├── index.css      # Global styles & design system
+│   └── main.tsx       # Entry point
+├── vercel.json        # Vercel deployment config
+├── vite.config.ts     # Vite configuration
+└── package.json
+```
+
+---
+
+## 📝 Credits
+
+**Made by Unnat Jain**
+
+---
+
+*© 2025 Shree Aradhna Jewellers. All rights reserved.*
