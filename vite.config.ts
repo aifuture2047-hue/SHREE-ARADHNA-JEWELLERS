@@ -1,17 +1,12 @@
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
-export default defineConfig(({ mode }) => {
-  // Load env from the shared directory
-  const env = loadEnv(mode, '/vercel/share', '')
-  
-  return {
-    plugins: [react()],
-    define: {
-      // Expose Supabase env vars to the client with VITE_ prefix
-      'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(env.SUPABASE_URL || env.NEXT_PUBLIC_SUPABASE_URL),
-      'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(env.SUPABASE_ANON_KEY || env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
-    },
-  }
+export default defineConfig({
+  plugins: [react()],
+  define: {
+    // Hardcode Supabase env vars for now (these are public keys, safe to expose)
+    'import.meta.env.VITE_SUPABASE_URL': JSON.stringify('https://neatmnfrlysqoikgbsde.supabase.co'),
+    'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lYXRtbmZybHlzcW9pa2dic2RlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5OTkxMDksImV4cCI6MjA2MzU3NTEwOX0.audJHPVS2q1MplOLG2560zAwgFUChsZRzPKDXefVfKs'),
+  },
 })
