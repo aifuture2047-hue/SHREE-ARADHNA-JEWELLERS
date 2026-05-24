@@ -31,7 +31,7 @@ export const Hero: React.FC<HeroProps> = ({
     if (activeBanners.length <= 1) return;
     const interval = setInterval(() => {
       setCurrentSlide(prev => (prev + 1) % activeBanners.length);
-    }, 5000); // Changes slide every 5 seconds
+    }, 5000);
     return () => clearInterval(interval);
   }, [activeBanners]);
 
@@ -53,154 +53,174 @@ export const Hero: React.FC<HeroProps> = ({
   };
 
   return (
-    <section className="hero-sec-full" style={{ position: 'relative', overflow: 'hidden' }}>
-      {/* Slides Container */}
-      {activeBanners.map((banner, index) => (
-        <div
-          key={index}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundImage: `linear-gradient(180deg, rgba(12, 15, 15, 0.1) 0%, rgba(12, 15, 15, 0.9) 100%), url(${getImageUrl(banner)})`,
-            backgroundSize: 'contain',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            backgroundColor: '#0c0f0f',
-            opacity: currentSlide === index ? 1 : 0,
-            transition: 'opacity 1.2s ease-in-out',
-            zIndex: 1
-          }}
-        />
-      ))}
-
-      {/* Static Centered Actions Overlay */}
-      <div className="hero-centered-content" style={{ zIndex: 10, position: 'relative' }}>
-        <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button className="btn-primary" onClick={() => handleScroll('collections')}>
-            View Collections
-          </button>
-          <button className="btn-secondary" onClick={() => handleScroll('heritage')}>
-            Our Legacy
-          </button>
-        </div>
-      </div>
-
-      {/* Slider Controls */}
-      {activeBanners.length > 1 && (
-        <>
-          {/* Left Arrow */}
-          <button 
-            onClick={handlePrev}
+    <section className="hero-sec-full" style={{ position: 'relative', overflow: 'hidden', height: 'auto', minHeight: 0 }}>
+      {/* Image slides — stack absolutely, fade in/out */}
+      <div style={{ position: 'relative', width: '100%' }}>
+        {activeBanners.map((banner, index) => (
+          <div
+            key={index}
             style={{
-              position: 'absolute',
-              left: '20px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              zIndex: 12,
-              background: 'rgba(0, 0, 0, 0.3)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              color: '#fff',
-              width: '44px',
-              height: '44px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              backdropFilter: 'blur(4px)'
-            }}
-            aria-label="Previous slide"
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = 'var(--color-accent-gold)';
-              e.currentTarget.style.color = 'var(--color-accent-gold)';
-              e.currentTarget.style.background = 'rgba(0, 0, 0, 0.5)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
-              e.currentTarget.style.color = '#fff';
-              e.currentTarget.style.background = 'rgba(0, 0, 0, 0.3)';
+              position: index === 0 ? 'relative' : 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              opacity: currentSlide === index ? 1 : 0,
+              transition: 'opacity 1.2s ease-in-out',
+              zIndex: currentSlide === index ? 2 : 1,
+              lineHeight: 0
             }}
           >
-            <ChevronLeft size={24} />
-          </button>
-
-          {/* Right Arrow */}
-          <button 
-            onClick={handleNext}
-            style={{
-              position: 'absolute',
-              right: '20px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              zIndex: 12,
-              background: 'rgba(0, 0, 0, 0.3)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              color: '#fff',
-              width: '44px',
-              height: '44px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              backdropFilter: 'blur(4px)'
-            }}
-            aria-label="Next slide"
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = 'var(--color-accent-gold)';
-              e.currentTarget.style.color = 'var(--color-accent-gold)';
-              e.currentTarget.style.background = 'rgba(0, 0, 0, 0.5)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
-              e.currentTarget.style.color = '#fff';
-              e.currentTarget.style.background = 'rgba(0, 0, 0, 0.3)';
-            }}
-          >
-            <ChevronRight size={24} />
-          </button>
-
-          {/* Indicators / Dots */}
-          <div 
-            style={{
-              position: 'absolute',
-              bottom: '90px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              zIndex: 12,
-              display: 'flex',
-              gap: '10px'
-            }}
-          >
-            {activeBanners.map((_, index) => (
-              <button
-                key={index}
-                onClick={(e) => { e.stopPropagation(); setCurrentSlide(index); }}
-                style={{
-                  width: '8px',
-                  height: '8px',
-                  borderRadius: '50%',
-                  border: 'none',
-                  background: currentSlide === index ? 'var(--color-accent-gold)' : 'rgba(255, 255, 255, 0.3)',
-                  cursor: 'pointer',
-                  padding: 0,
-                  transition: 'all 0.3s ease'
-                }}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
+            <img
+              src={getImageUrl(banner)}
+              alt={`Hero banner ${index + 1}`}
+              style={{
+                width: '100%',
+                height: 'auto',
+                display: 'block',
+                objectFit: 'contain'
+              }}
+            />
           </div>
-        </>
-      )}
+        ))}
 
-      {/* Bouncing scroll indicator */}
-      <div className="hero-scroll-down-centered" onClick={() => handleScroll('market-dashboard')} style={{ zIndex: 12 }}>
-        <ChevronDown size={28} />
+        {/* Dark gradient overlay for buttons readability */}
+        <div style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: '40%',
+          background: 'linear-gradient(to top, rgba(12,15,15,0.85) 0%, transparent 100%)',
+          zIndex: 3,
+          pointerEvents: 'none'
+        }} />
+
+        {/* CTA Buttons */}
+        <div className="hero-centered-content" style={{ zIndex: 10, position: 'absolute', bottom: '80px', width: '100%', left: 0 }}>
+          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button className="btn-primary" onClick={() => handleScroll('collections')}>
+              View Collections
+            </button>
+            <button className="btn-secondary" onClick={() => handleScroll('heritage')}>
+              Our Legacy
+            </button>
+          </div>
+        </div>
+
+        {/* Slider Controls */}
+        {activeBanners.length > 1 && (
+          <>
+            {/* Left Arrow */}
+            <button
+              onClick={handlePrev}
+              style={{
+                position: 'absolute',
+                left: '20px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                zIndex: 12,
+                background: 'rgba(0, 0, 0, 0.3)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                color: '#fff',
+                width: '44px',
+                height: '44px',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                backdropFilter: 'blur(4px)'
+              }}
+              aria-label="Previous slide"
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'var(--color-accent-gold)';
+                e.currentTarget.style.color = 'var(--color-accent-gold)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                e.currentTarget.style.color = '#fff';
+              }}
+            >
+              <ChevronLeft size={24} />
+            </button>
+
+            {/* Right Arrow */}
+            <button
+              onClick={handleNext}
+              style={{
+                position: 'absolute',
+                right: '20px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                zIndex: 12,
+                background: 'rgba(0, 0, 0, 0.3)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                color: '#fff',
+                width: '44px',
+                height: '44px',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                backdropFilter: 'blur(4px)'
+              }}
+              aria-label="Next slide"
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'var(--color-accent-gold)';
+                e.currentTarget.style.color = 'var(--color-accent-gold)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                e.currentTarget.style.color = '#fff';
+              }}
+            >
+              <ChevronRight size={24} />
+            </button>
+
+            {/* Dots */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: '50px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 12,
+                display: 'flex',
+                gap: '10px'
+              }}
+            >
+              {activeBanners.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={(e) => { e.stopPropagation(); setCurrentSlide(index); }}
+                  style={{
+                    width: '8px',
+                    height: '8px',
+                    borderRadius: '50%',
+                    border: 'none',
+                    background: currentSlide === index ? 'var(--color-accent-gold)' : 'rgba(255, 255, 255, 0.3)',
+                    cursor: 'pointer',
+                    padding: 0,
+                    transition: 'all 0.3s ease'
+                  }}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* Scroll indicator */}
+        <div
+          className="hero-scroll-down-centered"
+          onClick={() => handleScroll('market-dashboard')}
+          style={{ zIndex: 12, position: 'absolute', bottom: '16px', left: '50%', transform: 'translateX(-50%)' }}
+        >
+          <ChevronDown size={28} />
+        </div>
       </div>
     </section>
   );

@@ -81,7 +81,8 @@ function App() {
       popupAdEnabled: false,
       popupAdImage: '',
       popupAdLink: '',
-      shopPhoto: ''
+      shopPhoto: '',
+      modelImages: []
     };
   });
 
@@ -167,7 +168,8 @@ function App() {
     popupAdEnabled: s.popup_ad_enabled || false,
     popupAdImage: s.popup_ad_image || '',
     popupAdLink: s.popup_ad_link || '',
-    shopPhoto: s.shop_photo || ''
+    shopPhoto: s.shop_photo || '',
+    modelImages: s.model_images || []
   });
 
   const mapSettingsToDB = (s: AppSettings) => ({
@@ -182,7 +184,8 @@ function App() {
     popup_ad_enabled: s.popupAdEnabled,
     popup_ad_image: s.popupAdImage,
     popup_ad_link: s.popupAdLink,
-    shop_photo: s.shopPhoto
+    shop_photo: s.shopPhoto,
+    model_images: s.modelImages || []
   });
 
   // ==========================================
@@ -481,7 +484,7 @@ function App() {
           />
 
           {/* Our Models horizontal scrollable showcase */}
-          <OurModels />
+          <OurModels modelImages={settings.modelImages} />
 
           {/* WhatsApp Floating Action FAB */}
           <WhatsAppFAB />

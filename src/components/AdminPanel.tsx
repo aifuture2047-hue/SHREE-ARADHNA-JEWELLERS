@@ -45,6 +45,7 @@ export interface AppSettings {
   heroBannerUrl?: string; // legacy support
   heroMobileBannerUrl?: string; // legacy support
   shopPhoto?: string;
+  modelImages?: string[];
 }
 
 interface AdminPanelProps {
@@ -159,6 +160,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [settingsCollectionsDiamond, setSettingsCollectionsDiamond] = useState(settings?.collectionsDiamondImage || '');
   const [settingsCollectionsSilver, setSettingsCollectionsSilver] = useState(settings?.collectionsSilverImage || '');
   const [settingsShopPhoto, setSettingsShopPhoto] = useState(settings?.shopPhoto || '');
+  const [settingsModelImages, setSettingsModelImages] = useState<string[]>(settings?.modelImages || []);
 
   // Popup ad state
   const [settingsPopupAdEnabled, setSettingsPopupAdEnabled] = useState(settings?.popupAdEnabled || false);
@@ -329,6 +331,20 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     }
   };
 
+  const handleModelImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const idx = settingsModelImages.length;
+      processAndUploadFile(file, 1200, 1600, 'models', (url) => {
+        setSettingsModelImages(prev => [...prev, url]);
+      }, `model-${idx}`);
+    }
+  };
+
+  const handleRemoveModelImage = (index: number) => {
+    setSettingsModelImages(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handleSaveSettings = (e: React.FormEvent) => {
     e.preventDefault();
     setSettings({
@@ -342,9 +358,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       popupAdEnabled: settingsPopupAdEnabled,
       popupAdImage: settingsPopupAdImage,
       popupAdLink: settingsPopupAdLink,
-      heroBannerUrl: settingsBanners[0], // for legacy compatibility
-      heroMobileBannerUrl: settingsMobileBanners[0], // for legacy compatibility
-      shopPhoto: settingsShopPhoto
+      heroBannerUrl: settingsBanners[0],
+      heroMobileBannerUrl: settingsMobileBanners[0],
+      shopPhoto: settingsShopPhoto,
+      modelImages: settingsModelImages
     });
     setSettingsUpdatedMsg(true);
     setTimeout(() => setSettingsUpdatedMsg(false), 3000);
@@ -1147,9 +1164,59 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   </div>
                 </div>
 
+                {/* Section: Our Models Images */}
+                <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '24px', marginTop: '12px' }}>
+                  <h3 className="headline-sm" style={{ fontSize: '16px', color: 'var(--color-accent-gold)', marginBottom: '8px' }}>Our Models Slideshow</h3>
+                  <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>Upload model/showcase photos for the "Our Models" section on the homepage. Supports multiple images.</p>
+
+                  {/* Upload button */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleModelImageFileChange}
+                      style={{ display: 'none' }}
+                      id="model-image-file"
+                    />
+                    <label htmlFor="model-image-file" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '10px', height: 'auto', border: '1px solid var(--color-border-subtle)', cursor: 'pointer' }}>
+                      {uploadingState[`model-${settingsModelImages.length}`] ? 'Uploading...' : '+ Add Model Image'}
+                    </label>
+                    <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>{settingsModelImages.length} image(s) uploaded</span>
+                  </div>
+
+                  {/* Thumbnails */}
+                  {settingsModelImages.length > 0 && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                      {settingsModelImages.map((url, idx) => (
+                        <div key={idx} style={{ position: 'relative', width: '70px', height: '70px' }}>
+                          <img
+                            src={url}
+                            alt={`Model ${idx + 1}`}
+                            style={{ width: '70px', height: '70px', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px' }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveModelImage(idx)}
+                            style={{
+                              position: 'absolute', top: '-6px', right: '-6px',
+                              width: '18px', height: '18px', borderRadius: '50%',
+                              background: 'var(--color-error)', border: 'none',
+                              color: '#fff', fontSize: '10px', cursor: 'pointer',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              lineHeight: 1, padding: 0
+                            }}
+                            title="Remove"
+                          >✕</button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
                 <button type="submit" className="btn-primary" style={{ marginTop: '16px' }}>
                   Save Homepage Settings
                 </button>
+
               </div>
             </form>
           </div>
