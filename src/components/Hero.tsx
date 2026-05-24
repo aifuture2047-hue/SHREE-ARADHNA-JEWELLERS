@@ -110,7 +110,7 @@ export const Hero: React.FC<HeroProps> = ({
             <button 
               onClick={handlePrev}
               style={{
-                position: 'absolute', left: '20px', top: '30%', transform: 'translateY(-50%)',
+                position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)',
                 zIndex: 12, background: 'rgba(0, 0, 0, 0.3)', border: '1px solid rgba(255, 255, 255, 0.08)',
                 color: '#fff', width: '44px', height: '44px', borderRadius: '50%',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
@@ -123,7 +123,7 @@ export const Hero: React.FC<HeroProps> = ({
             <button 
               onClick={handleNext}
               style={{
-                position: 'absolute', right: '20px', top: '30%', transform: 'translateY(-50%)',
+                position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)',
                 zIndex: 12, background: 'rgba(0, 0, 0, 0.3)', border: '1px solid rgba(255, 255, 255, 0.08)',
                 color: '#fff', width: '44px', height: '44px', borderRadius: '50%',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
