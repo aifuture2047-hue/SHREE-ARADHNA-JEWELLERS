@@ -52,7 +52,7 @@ export const OurModels: React.FC<OurModelsProps> = ({ modelImages = [] }) => {
 
         <div
           style={{
-            position: 'relative',
+            display: 'grid',
             width: '100%',
             maxWidth: '900px',
             margin: '0 auto',
@@ -69,8 +69,7 @@ export const OurModels: React.FC<OurModelsProps> = ({ modelImages = [] }) => {
             <div
               key={slide.id}
               style={{
-                position: index === 0 ? 'relative' : 'absolute',
-                top: 0, left: 0,
+                gridArea: '1 / 1',
                 width: '100%',
                 opacity: currentSlide === index ? 1 : 0,
                 transition: 'opacity 1s ease-in-out',
@@ -80,7 +79,14 @@ export const OurModels: React.FC<OurModelsProps> = ({ modelImages = [] }) => {
               <img
                 src={getImageUrl(slide.imageUrl)}
                 alt={`Model ${index + 1}`}
-                style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'contain' }}
+                style={{ 
+                  width: '100%', 
+                  height: '100%', 
+                  maxHeight: '80vh',
+                  aspectRatio: isMobile ? '4/5' : '16/9',
+                  display: 'block', 
+                  objectFit: 'cover' 
+                }}
                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
               />
             </div>
