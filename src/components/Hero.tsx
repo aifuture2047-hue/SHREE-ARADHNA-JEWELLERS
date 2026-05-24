@@ -51,25 +51,13 @@ export const Hero: React.FC<HeroProps> = ({
               opacity: currentSlide === index ? 1 : 0,
               transition: 'opacity 1.2s ease-in-out',
               zIndex: currentSlide === index ? 2 : 1,
-              position: 'relative'
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#0c0f0f' // Clean solid dark background
             }}
           >
-            {/* Blurred Background Layer for filling empty space with dynamic colors */}
-            <img
-              src={getImageUrl(banner)}
-              alt=""
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                filter: 'blur(40px) brightness(0.6)',
-                transform: 'scale(1.1)',
-                zIndex: -1
-              }}
-            />
             {/* Sharp Foreground Image */}
             <img
               src={getImageUrl(banner)}
@@ -77,9 +65,10 @@ export const Hero: React.FC<HeroProps> = ({
               style={{
                 width: '100%',
                 height: '100%',
+                maxWidth: '1000px', // Prevent it from getting absurdly wide on huge screens if they use landscape
                 objectFit: 'contain',
                 display: 'block',
-                objectPosition: 'top center',
+                objectPosition: 'center center',
                 position: 'relative',
                 zIndex: 1
               }}
@@ -87,23 +76,23 @@ export const Hero: React.FC<HeroProps> = ({
           </div>
         ))}
 
-        {/* Gradient overlay for text readability */}
+        {/* Minimal Gradient for text readability at the very bottom */}
         <div style={{
           gridArea: '1 / 1',
           width: '100%',
           height: '100%',
-          background: 'linear-gradient(180deg, rgba(12, 15, 15, 0.1) 0%, rgba(12, 15, 15, 0.9) 100%)',
+          background: 'linear-gradient(180deg, rgba(12, 15, 15, 0) 50%, rgba(12, 15, 15, 0.95) 100%)',
           zIndex: 3,
           pointerEvents: 'none'
         }} />
 
-        {/* Premium Centered Actions Overlay */}
-        <div className="hero-centered-content" style={{ zIndex: 10, position: 'absolute', bottom: '100px', width: '100%', left: 0 }}>
-          <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button className="btn-primary" onClick={() => handleScroll('collections')} style={{ minWidth: '180px', padding: '14px 32px', fontSize: '13px', letterSpacing: '2px', textTransform: 'uppercase' }}>
+        {/* Clean Centered Actions */}
+        <div className="hero-centered-content" style={{ zIndex: 10, position: 'absolute', bottom: '60px', width: '100%', left: 0 }}>
+          <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button className="btn-primary" onClick={() => handleScroll('collections')} style={{ minWidth: '160px', padding: '12px 28px', fontSize: '13px', letterSpacing: '1px', textTransform: 'uppercase', border: '1px solid var(--color-accent-gold)' }}>
               View Collections
             </button>
-            <button className="btn-secondary" onClick={() => handleScroll('heritage')} style={{ minWidth: '180px', padding: '14px 32px', fontSize: '13px', letterSpacing: '2px', textTransform: 'uppercase', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(8px)' }}>
+            <button className="btn-secondary" onClick={() => handleScroll('heritage')} style={{ minWidth: '160px', padding: '12px 28px', fontSize: '13px', letterSpacing: '1px', textTransform: 'uppercase', background: 'transparent', border: '1px solid rgba(255,255,255,0.2)' }}>
               Our Legacy
             </button>
           </div>
