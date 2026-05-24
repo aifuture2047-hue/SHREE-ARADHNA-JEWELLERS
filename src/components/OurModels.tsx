@@ -14,6 +14,7 @@ interface OurModelsProps {
 export const OurModels: React.FC<OurModelsProps> = ({ modelImages = [] }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -73,19 +74,42 @@ export const OurModels: React.FC<OurModelsProps> = ({ modelImages = [] }) => {
                 width: '100%',
                 opacity: currentSlide === index ? 1 : 0,
                 transition: 'opacity 1s ease-in-out',
-                zIndex: currentSlide === index ? 2 : 1
+                zIndex: currentSlide === index ? 2 : 1,
+                position: 'relative'
               }}
             >
+              {/* Loading Skeleton */}
+              {!loadedImages[index] && (
+                <div 
+                  style={{
+                    position: 'absolute',
+                    top: 0, left: 0, right: 0, bottom: 0,
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                    animation: 'pulse 1.5s infinite ease-in-out',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 0
+                  }}
+                >
+                  <div style={{ width: '30px', height: '30px', border: '2px solid rgba(255,255,255,0.1)', borderTopColor: 'var(--color-accent-gold)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                </div>
+              )}
               <img
                 src={getImageUrl(slide.imageUrl)}
                 alt={`Model ${index + 1}`}
+                onLoad={() => setLoadedImages(prev => ({ ...prev, [index]: true }))}
                 style={{ 
                   width: '100%', 
                   height: '100%', 
                   maxHeight: '80vh',
                   aspectRatio: isMobile ? '4/5' : '16/9',
                   display: 'block', 
-                  objectFit: 'cover' 
+                  objectFit: 'cover',
+                  opacity: loadedImages[index] ? 1 : 0,
+                  transition: 'opacity 0.3s ease-in-out',
+                  position: 'relative',
+                  zIndex: 1
                 }}
                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
               />
