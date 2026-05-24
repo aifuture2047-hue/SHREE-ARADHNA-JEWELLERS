@@ -43,8 +43,8 @@ export const Hero: React.FC<HeroProps> = ({
   if (activeBanners.length === 0) return null;
 
   return (
-    <section className="hero-sec-full" style={{ position: 'relative', overflow: 'hidden', height: '100vh', backgroundColor: '#0c0f0f' }}>
-      {/* Slides Container bounded to viewport height */}
+    <section className="hero-sec-full" style={{ position: 'relative', overflow: 'hidden', height: 'calc(100vh - 116px)', backgroundColor: '#0c0f0f' }}>
+      {/* Slides Container bounded to viewport height minus header */}
       <div style={{ display: 'grid', width: '100%', height: '100%' }}>
         {activeBanners.map((banner, index) => (
           <div
@@ -64,7 +64,7 @@ export const Hero: React.FC<HeroProps> = ({
               style={{
                 width: '100%',
                 height: '100%',
-                objectFit: 'cover',
+                objectFit: 'contain',
                 display: 'block',
                 objectPosition: 'top center'
               }}
