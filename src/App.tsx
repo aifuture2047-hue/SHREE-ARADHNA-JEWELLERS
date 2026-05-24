@@ -158,24 +158,16 @@ function App() {
   const [view, setView] = useState<'storefront' | 'admin' | 'legacy'>('storefront');
 
   // Rates State (seed with rates matching user's screenshot)
-  const [rates, setRatesState] = useState<Rates>(() => {
-    const savedRates = localStorage.getItem('aradhna_rates_v3');
-    if (savedRates) {
-      return JSON.parse(savedRates);
-    }
-    return {
-      gold22k: 66450, // matches screenshot
-      gold18k: 54370, // standard market estimation relative to 22K
-      silver: 84200,  // matches screenshot
-      goldChange: 'up',
-      silverChange: 'down' // matches screenshot downward trend
-    };
+  const [rates, setRatesState] = useState<Rates>({
+    gold22k: 66450, // matches screenshot
+    gold18k: 54370, // standard market estimation relative to 22K
+    silver: 84200,  // matches screenshot
+    goldChange: 'up',
+    silverChange: 'down' // matches screenshot downward trend
   });
 
   // App Settings State (banner image & texts)
   const [settings, setSettingsState] = useState<AppSettings>(() => {
-    const savedSettings = localStorage.getItem('aradhna_settings_v3');
-    
     const defaultBanners = [
       '/mobile_hero_3.png',
       '/mobile_hero_1.jpg',
@@ -190,7 +182,7 @@ function App() {
       ''
     ];
 
-    const defaultSettings: AppSettings = {
+    return {
       heroBanners: defaultBanners,
       heroMobileBanners: defaultMobileBanners,
       heroTitle: 'Eternal Heritage\nHandcrafted Brilliance',
@@ -203,61 +195,6 @@ function App() {
       popupAdLink: '',
       shopPhoto: ''
     };
-
-    if (savedSettings) {
-      try {
-        const parsed = JSON.parse(savedSettings);
-        
-        // Migrate single values to arrays
-        if (!parsed.heroBanners) {
-          const initialBanner = parsed.heroBannerUrl || '/hero_desktop.jpg';
-          parsed.heroBanners = [
-            initialBanner === '/hero_banner.jpg' ? '/hero_desktop.jpg' : initialBanner,
-            '/hero_necklace.png',
-            '/shop_photo.jpg',
-            '/bangles.png'
-          ];
-        }
-        
-        // Overwrite/migrate old mobile defaults to the new 2 mobile banners
-        const hasOldMobileDefaults = !parsed.heroMobileBanners || 
-          parsed.heroMobileBanners.includes('/hero_banner.jpg') || 
-          parsed.heroMobileBanners.includes('/mobile_hero_2.jpg') ||
-          parsed.heroMobileBanners.includes('/mobile_hero_4.jpg') ||
-          (parsed.heroMobileBanners.includes('/hero_necklace.png') && parsed.heroMobileBanners.includes('/bangles.png'));
-
-        if (hasOldMobileDefaults) {
-          parsed.heroMobileBanners = [...defaultMobileBanners];
-        }
-
-        // Ensure mobile banners are present in heroBanners (laptop view)
-        const hasMobileBannersInDesktop = parsed.heroBanners && 
-          parsed.heroBanners.includes('/mobile_hero_3.png') && 
-          parsed.heroBanners.includes('/mobile_hero_1.jpg');
-
-        if (!hasMobileBannersInDesktop) {
-          parsed.heroBanners = [
-            '/mobile_hero_3.png',
-            '/mobile_hero_1.jpg',
-            '/hero_desktop.jpg',
-            '/hero_necklace.png'
-          ];
-        }
-        
-        // Ensure array lengths are exactly 4
-        while (parsed.heroBanners.length < 4) {
-          parsed.heroBanners.push(defaultBanners[parsed.heroBanners.length]);
-        }
-        while (parsed.heroMobileBanners.length < 4) {
-          parsed.heroMobileBanners.push(defaultMobileBanners[parsed.heroMobileBanners.length]);
-        }
-
-        return { ...defaultSettings, ...parsed };
-      } catch (e) {
-        return defaultSettings;
-      }
-    }
-    return defaultSettings;
   });
 
   // Announcement popup control state
@@ -278,35 +215,13 @@ function App() {
   };
 
   // Products State
-  const [products, setProducts] = useState<Product[]>(() => {
-    const savedProducts = localStorage.getItem('aradhna_products_v3');
-    if (savedProducts) {
-      try {
-        const parsed = JSON.parse(savedProducts) as Product[];
-        const existingIds = new Set(parsed.map(p => p.id));
-        const missingSeeds = INITIAL_PRODUCTS.filter(p => !existingIds.has(p.id));
-        if (missingSeeds.length > 0) {
-          return [...parsed, ...missingSeeds];
-        }
-        return parsed;
-      } catch (e) {
-        return INITIAL_PRODUCTS;
-      }
-    }
-    return INITIAL_PRODUCTS;
-  });
+  const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
 
   // WhatsApp click analytics state
-  const [inquiries, setInquiries] = useState<Inquiry[]>(() => {
-    const savedInquiries = localStorage.getItem('aradhna_inquiries_v3');
-    return savedInquiries ? JSON.parse(savedInquiries) : [];
-  });
+  const [inquiries, setInquiries] = useState<Inquiry[]>([]);
 
   // Contact messages state
-  const [contactMessages, setContactMessages] = useState<ContactMessage[]>(() => {
-    const savedMessages = localStorage.getItem('aradhna_messages_v3');
-    return savedMessages ? JSON.parse(savedMessages) : INITIAL_MESSAGES;
-  });
+  const [contactMessages, setContactMessages] = useState<ContactMessage[]>(INITIAL_MESSAGES);
 
   // Pre-filled contact message state
   const [prefilledMessage, setPrefilledMessage] = useState('');
@@ -465,7 +380,6 @@ function App() {
   // Persist rates changes
   const setRates = async (newRates: Rates) => {
     setRatesState(newRates);
-    localStorage.setItem('aradhna_rates_v3', JSON.stringify(newRates));
     if (isSupabaseConfigured) {
       try {
         await supabase.from('rates').insert([mapRatesToDB(newRates)]);
@@ -478,7 +392,6 @@ function App() {
   // Persist settings changes
   const setSettings = async (newSettings: AppSettings) => {
     setSettingsState(newSettings);
-    localStorage.setItem('aradhna_settings_v3', JSON.stringify(newSettings));
     if (isSupabaseConfigured) {
       try {
         await supabase.from('settings').upsert(mapSettingsToDB(newSettings));
@@ -488,20 +401,7 @@ function App() {
     }
   };
 
-  // Sync products state with localStorage
-  useEffect(() => {
-    localStorage.setItem('aradhna_products_v3', JSON.stringify(products));
-  }, [products]);
-
-  // Sync inquiries with localStorage
-  useEffect(() => {
-    localStorage.setItem('aradhna_inquiries_v3', JSON.stringify(inquiries));
-  }, [inquiries]);
-
-  // Sync messages with localStorage
-  useEffect(() => {
-    localStorage.setItem('aradhna_messages_v3', JSON.stringify(contactMessages));
-  }, [contactMessages]);
+  // Local storage hooks removed
 
   // Product actions (CRUD)
   const handleAddProduct = async (newProd: Product) => {
