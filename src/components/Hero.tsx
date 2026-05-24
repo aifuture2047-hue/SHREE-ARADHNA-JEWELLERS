@@ -4,9 +4,6 @@ import { getImageUrl } from '../lib/supabase';
 
 interface HeroProps {
   banners: string[];
-  mobileBanners: string[]; // Keeping prop for compatibility but won't use it
-  title: string;
-  subtitle: string;
 }
 
 export const Hero: React.FC<HeroProps> = ({ 

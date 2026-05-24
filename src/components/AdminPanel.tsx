@@ -884,31 +884,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
             <form onSubmit={handleSaveSettings} className="calc-card" style={{ maxWidth: '700px', margin: 0 }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                <div className="input-group">
-                  <label className="form-label">Hero Banner Title</label>
-                  <textarea 
-                    className="form-input" 
-                    rows={2}
-                    value={settingsTitle}
-                    onChange={(e) => setSettingsTitle(e.target.value)}
-                    placeholder="Enter main hero title..."
-                    style={{ resize: 'vertical', fontFamily: 'var(--font-serif)', fontSize: '20px' }}
-                    required
-                  />
-                </div>
 
-                <div className="input-group">
-                  <label className="form-label">Hero Banner Subtitle</label>
-                  <textarea 
-                    className="form-input" 
-                    rows={3}
-                    value={settingsSubtitle}
-                    onChange={(e) => setSettingsSubtitle(e.target.value)}
-                    placeholder="Enter hero subtitle description..."
-                    style={{ resize: 'vertical' }}
-                    required
-                  />
-                </div>
 
                 {/* Main Banners Section */}
                 <div style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '24px', marginBottom: '24px' }}>
@@ -948,94 +924,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
 
 
-                {/* Section: Collections Overrides */}
-                <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '24px', marginTop: '12px' }}>
-                  <h3 className="headline-sm" style={{ fontSize: '16px', color: 'var(--color-accent-gold)', marginBottom: '16px' }}>Collections Showcase Overrides</h3>
-                  
-                  {/* Bridal Card Override */}
-                  <div style={{ marginBottom: '20px' }}>
-                    <label className="form-label" style={{ display: 'block', marginBottom: '8px' }}>Bridal Highlight Image</label>
-                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-                      <input 
-                        type="file" 
-                        accept="image/*" 
-                        onChange={handleCollectionsBridalFileChange}
-                        style={{ display: 'none' }}
-                        id="bridal-file"
-                      />
-                      <label htmlFor="bridal-file" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '10px', height: 'auto', border: '1px solid var(--color-border-subtle)', cursor: 'pointer' }}>
-                        {uploadingState['bridal'] ? 'Uploading...' : 'Upload Bridal File'}
-                      </label>
-                      <input 
-                        type="text" 
-                        className="form-input" 
-                        style={{ flex: 1, minWidth: '200px', padding: '6px 0', fontSize: '13px' }}
-                        value={settingsCollectionsBridal}
-                        onChange={(e) => setSettingsCollectionsBridal(e.target.value)}
-                        placeholder="Or paste URL / /hero_necklace.png"
-                      />
-                      {settingsCollectionsBridal && (
-                        <img src={settingsCollectionsBridal} alt="" style={{ width: '40px', height: '40px', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.1)' }} />
-                      )}
-                    </div>
-                  </div>
 
-                  {/* Diamond Card Override */}
-                  <div style={{ marginBottom: '20px' }}>
-                    <label className="form-label" style={{ display: 'block', marginBottom: '8px' }}>Diamond Highlight Image</label>
-                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-                      <input 
-                        type="file" 
-                        accept="image/*" 
-                        onChange={handleCollectionsDiamondFileChange}
-                        style={{ display: 'none' }}
-                        id="diamond-file"
-                      />
-                      <label htmlFor="diamond-file" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '10px', height: 'auto', border: '1px solid var(--color-border-subtle)', cursor: 'pointer' }}>
-                        {uploadingState['diamond'] ? 'Uploading...' : 'Upload Diamond File'}
-                      </label>
-                      <input 
-                        type="text" 
-                        className="form-input" 
-                        style={{ flex: 1, minWidth: '200px', padding: '6px 0', fontSize: '13px' }}
-                        value={settingsCollectionsDiamond}
-                        onChange={(e) => setSettingsCollectionsDiamond(e.target.value)}
-                        placeholder="Or paste URL / /ring.png"
-                      />
-                      {settingsCollectionsDiamond && (
-                        <img src={settingsCollectionsDiamond} alt="" style={{ width: '40px', height: '40px', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.1)' }} />
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Silver Card Override */}
-                  <div style={{ marginBottom: '20px' }}>
-                    <label className="form-label" style={{ display: 'block', marginBottom: '8px' }}>Silver Highlight Image</label>
-                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-                      <input 
-                        type="file" 
-                        accept="image/*" 
-                        onChange={handleCollectionsSilverFileChange}
-                        style={{ display: 'none' }}
-                        id="silver-file"
-                      />
-                      <label htmlFor="silver-file" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '10px', height: 'auto', border: '1px solid var(--color-border-subtle)', cursor: 'pointer' }}>
-                        {uploadingState['silver'] ? 'Uploading...' : 'Upload Silver File'}
-                      </label>
-                      <input 
-                        type="text" 
-                        className="form-input" 
-                        style={{ flex: 1, minWidth: '200px', padding: '6px 0', fontSize: '13px' }}
-                        value={settingsCollectionsSilver}
-                        onChange={(e) => setSettingsCollectionsSilver(e.target.value)}
-                        placeholder="Or paste URL / /bangles.png"
-                      />
-                      {settingsCollectionsSilver && (
-                        <img src={settingsCollectionsSilver} alt="" style={{ width: '40px', height: '40px', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.1)' }} />
-                      )}
-                    </div>
-                  </div>
-                </div>
 
                 {/* Section: Promotional Popup */}
                 <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '24px', marginTop: '12px' }}>

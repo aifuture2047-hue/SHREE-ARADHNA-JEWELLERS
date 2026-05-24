@@ -446,9 +446,6 @@ function App() {
           {/* Hero Banner Carousel */}
           <Hero 
             banners={settings.heroBanners}
-            mobileBanners={settings.heroMobileBanners}
-            title={settings.heroTitle}
-            subtitle={settings.heroSubtitle}
           />
 
           {/* Live Market Dashboard Section (New UI requirement) */}
