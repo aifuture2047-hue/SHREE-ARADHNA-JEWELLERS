@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { getImageUrl } from '../lib/supabase';
 
 interface HeroProps {
@@ -46,16 +45,6 @@ export const Hero: React.FC<HeroProps> = ({
     }, 5000);
     return () => clearInterval(interval);
   }, [activeBanners]);
-
-  const handlePrev = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCurrentSlide(prev => (prev - 1 + activeBanners.length) % activeBanners.length);
-  };
-
-  const handleNext = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCurrentSlide(prev => (prev + 1) % activeBanners.length);
-  };
 
   const handleScroll = (elementId: string) => {
     const element = document.getElementById(elementId);
