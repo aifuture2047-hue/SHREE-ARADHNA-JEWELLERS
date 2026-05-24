@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { MapPin, Phone, Clock, ExternalLink } from 'lucide-react';
 import { getImageUrl } from '../lib/supabase';
 
-export const LocationGallery: React.FC = () => {
+interface LocationGalleryProps {
+  shopPhoto?: string;
+}
+
+export const LocationGallery: React.FC<LocationGalleryProps> = ({ shopPhoto }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
@@ -115,7 +119,7 @@ export const LocationGallery: React.FC = () => {
               boxShadow: '0 20px 60px rgba(0,0,0,0.4)'
             }}>
               <img 
-                src={getImageUrl("/shop_photo.jpg")} 
+                src={getImageUrl(shopPhoto || "/shop_photo.jpg")} 
                 alt="New Gayatri Jewellers — Shop Front, Main Bazar, Rapar" 
                 style={{
                   width: '100%',

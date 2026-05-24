@@ -44,6 +44,7 @@ export interface AppSettings {
   popupAdLink: string;
   heroBannerUrl?: string; // legacy support
   heroMobileBannerUrl?: string; // legacy support
+  shopPhoto?: string;
 }
 
 interface AdminPanelProps {
@@ -157,6 +158,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [settingsCollectionsBridal, setSettingsCollectionsBridal] = useState(settings?.collectionsBridalImage || '');
   const [settingsCollectionsDiamond, setSettingsCollectionsDiamond] = useState(settings?.collectionsDiamondImage || '');
   const [settingsCollectionsSilver, setSettingsCollectionsSilver] = useState(settings?.collectionsSilverImage || '');
+  const [settingsShopPhoto, setSettingsShopPhoto] = useState(settings?.shopPhoto || '');
 
   // Popup ad state
   const [settingsPopupAdEnabled, setSettingsPopupAdEnabled] = useState(settings?.popupAdEnabled || false);
@@ -320,6 +322,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     }
   };
 
+  const handleShopPhotoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      processAndUploadFile(file, 1200, 800, 'shop', setSettingsShopPhoto, 'shopphoto');
+    }
+  };
+
   const handleSaveSettings = (e: React.FormEvent) => {
     e.preventDefault();
     setSettings({
@@ -334,7 +343,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       popupAdImage: settingsPopupAdImage,
       popupAdLink: settingsPopupAdLink,
       heroBannerUrl: settingsBanners[0], // for legacy compatibility
-      heroMobileBannerUrl: settingsMobileBanners[0] // for legacy compatibility
+      heroMobileBannerUrl: settingsMobileBanners[0], // for legacy compatibility
+      shopPhoto: settingsShopPhoto
     });
     setSettingsUpdatedMsg(true);
     setTimeout(() => setSettingsUpdatedMsg(false), 3000);
@@ -1091,7 +1101,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   </div>
 
                   {/* Redirect Link */}
-                  <div className="input-group">
+                  <div className="input-group" style={{ marginBottom: '24px' }}>
                     <label className="form-label">Redirect Link URL (Optional)</label>
                     <input 
                       type="text" 
@@ -1100,6 +1110,40 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       onChange={(e) => setSettingsPopupAdLink(e.target.value)}
                       placeholder="e.g. #collections or https://wa.me/..."
                     />
+                  </div>
+                </div>
+
+                {/* Section: Shop Front Photo */}
+                <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '24px', marginTop: '12px' }}>
+                  <h3 className="headline-sm" style={{ fontSize: '16px', color: 'var(--color-accent-gold)', marginBottom: '16px' }}>Shop Front Gallery Image</h3>
+                  
+                  <div style={{ marginBottom: '20px' }}>
+                    <label className="form-label" style={{ display: 'block', marginBottom: '8px' }}>Storefront Photo {uploadingState['shopphoto'] && <span style={{ color: 'var(--color-accent-gold)' }}>(Uploading...)</span>}</label>
+                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleShopPhotoFileChange}
+                        style={{ display: 'none' }}
+                        id="shopphoto-file"
+                      />
+                      <label htmlFor="shopphoto-file" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '10px', height: 'auto', border: '1px solid var(--color-border-subtle)', cursor: 'pointer' }}>
+                        {uploadingState['shopphoto'] ? 'Uploading...' : 'Upload Shop Photo'}
+                      </label>
+                      <input 
+                        type="text" 
+                        className="form-input" 
+                        style={{ flex: 1, minWidth: '200px', padding: '6px 12px', fontSize: '13px' }}
+                        value={settingsShopPhoto}
+                        onChange={(e) => setSettingsShopPhoto(e.target.value)}
+                        placeholder="Or paste URL / /shop_photo.jpg"
+                      />
+                      {settingsShopPhoto && (
+                        <div style={{ width: '50px', height: '40px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+                          <img src={settingsShopPhoto} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 

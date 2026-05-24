@@ -200,7 +200,8 @@ function App() {
       collectionsSilverImage: '',
       popupAdEnabled: false,
       popupAdImage: '',
-      popupAdLink: ''
+      popupAdLink: '',
+      shopPhoto: ''
     };
 
     if (savedSettings) {
@@ -362,7 +363,8 @@ function App() {
     collectionsSilverImage: s.collections_silver_image || '',
     popupAdEnabled: s.popup_ad_enabled || false,
     popupAdImage: s.popup_ad_image || '',
-    popupAdLink: s.popup_ad_link || ''
+    popupAdLink: s.popup_ad_link || '',
+    shopPhoto: s.shop_photo || ''
   });
 
   const mapSettingsToDB = (s: AppSettings) => ({
@@ -376,7 +378,8 @@ function App() {
     collections_silver_image: s.collectionsSilverImage,
     popup_ad_enabled: s.popupAdEnabled,
     popup_ad_image: s.popupAdImage,
-    popup_ad_link: s.popupAdLink
+    popup_ad_link: s.popupAdLink,
+    shop_photo: s.shopPhoto
   });
 
   // ==========================================
@@ -680,7 +683,7 @@ function App() {
           />
 
           {/* Location Gallery & Dark Vector Map (New UI requirement) */}
-          <LocationGallery />
+          <LocationGallery shopPhoto={settings.shopPhoto} />
 
           {/* Luxe Contact Form */}
           <ContactForm 
