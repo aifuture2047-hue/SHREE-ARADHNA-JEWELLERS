@@ -129,15 +129,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     }
     return arr;
   });
-  const [settingsMobileBanners, setSettingsMobileBanners] = useState<string[]>(() => {
-    const arr = [...(settings?.heroMobileBanners || [])];
-    while (arr.length < 4) {
-      arr.push(arr.length === 0 ? settings?.heroMobileBannerUrl || '/hero_banner.jpg' : '');
-    }
-    return arr;
-  });
-  const [settingsTitle, setSettingsTitle] = useState(settings?.heroTitle || 'Eternal Heritage\nHandcrafted Brilliance');
-  const [settingsSubtitle, setSettingsSubtitle] = useState(settings?.heroSubtitle || '');
+
 
   const updateBannerAtIndex = (index: number, value: string) => {
     setSettingsBanners(prev => {
@@ -147,18 +139,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     });
   };
 
-  const updateMobileBannerAtIndex = (index: number, value: string) => {
-    setSettingsMobileBanners(prev => {
-      const copy = [...prev];
-      copy[index] = value;
-      return copy;
-    });
-  };
-  
   // Collections overrides state
-  const [settingsCollectionsBridal, setSettingsCollectionsBridal] = useState(settings?.collectionsBridalImage || '');
-  const [settingsCollectionsDiamond, setSettingsCollectionsDiamond] = useState(settings?.collectionsDiamondImage || '');
-  const [settingsCollectionsSilver, setSettingsCollectionsSilver] = useState(settings?.collectionsSilverImage || '');
   const [settingsShopPhoto, setSettingsShopPhoto] = useState(settings?.shopPhoto || '');
   const [settingsModelImages, setSettingsModelImages] = useState<string[]>(settings?.modelImages || []);
 
@@ -282,40 +263,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     }
   };
 
-  const handleMobileBannerFileChangeAtIndex = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      processAndUploadFile(
-        file,
-        800,
-        1200,
-        'banners_mobile',
-        (url) => updateMobileBannerAtIndex(index, url),
-        `mobile-banner-${index}`
-      );
-    }
-  };
 
-  const handleCollectionsBridalFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      processAndUploadFile(file, 800, 800, 'collections', setSettingsCollectionsBridal, 'bridal');
-    }
-  };
-
-  const handleCollectionsDiamondFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      processAndUploadFile(file, 800, 800, 'collections', setSettingsCollectionsDiamond, 'diamond');
-    }
-  };
-
-  const handleCollectionsSilverFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      processAndUploadFile(file, 800, 800, 'collections', setSettingsCollectionsSilver, 'silver');
-    }
-  };
 
   const handlePopupAdFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -349,17 +297,17 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     e.preventDefault();
     setSettings({
       heroBanners: settingsBanners,
-      heroMobileBanners: settingsMobileBanners,
-      heroTitle: settingsTitle,
-      heroSubtitle: settingsSubtitle,
-      collectionsBridalImage: settingsCollectionsBridal,
-      collectionsDiamondImage: settingsCollectionsDiamond,
-      collectionsSilverImage: settingsCollectionsSilver,
+      heroMobileBanners: [],
+      heroTitle: '',
+      heroSubtitle: '',
+      collectionsBridalImage: '',
+      collectionsDiamondImage: '',
+      collectionsSilverImage: '',
       popupAdEnabled: settingsPopupAdEnabled,
       popupAdImage: settingsPopupAdImage,
       popupAdLink: settingsPopupAdLink,
       heroBannerUrl: settingsBanners[0],
-      heroMobileBannerUrl: settingsMobileBanners[0],
+      heroMobileBannerUrl: '',
       shopPhoto: settingsShopPhoto,
       modelImages: settingsModelImages
     });
