@@ -43,21 +43,19 @@ export const Hero: React.FC<HeroProps> = ({
   if (activeBanners.length === 0) return null;
 
   return (
-    <section className="hero-sec-full" style={{ position: 'relative', overflow: 'hidden', height: 'auto', backgroundColor: '#0c0f0f' }}>
-      {/* Slides Container using exact img size to prevent gaps */}
-      <div style={{ position: 'relative', width: '100%' }}>
+    <section className="hero-sec-full" style={{ position: 'relative', overflow: 'hidden', height: '100vh', backgroundColor: '#0c0f0f' }}>
+      {/* Slides Container bounded to viewport height */}
+      <div style={{ display: 'grid', width: '100%', height: '100%' }}>
         {activeBanners.map((banner, index) => (
           <div
             key={index}
             style={{
-              position: index === 0 ? 'relative' : 'absolute',
-              top: 0,
-              left: 0,
+              gridArea: '1 / 1',
               width: '100%',
+              height: '100%',
               opacity: currentSlide === index ? 1 : 0,
               transition: 'opacity 1.2s ease-in-out',
-              zIndex: currentSlide === index ? 2 : 1,
-              lineHeight: 0
+              zIndex: currentSlide === index ? 2 : 1
             }}
           >
             <img
@@ -65,27 +63,27 @@ export const Hero: React.FC<HeroProps> = ({
               alt={`Hero banner ${index + 1}`}
               style={{
                 width: '100%',
-                height: 'auto',
-                display: 'block'
+                height: '100%',
+                objectFit: 'cover',
+                display: 'block',
+                objectPosition: 'top center'
               }}
             />
           </div>
         ))}
 
-        {/* Gradient overlay just at the very bottom for button readability */}
+        {/* Gradient overlay for text readability */}
         <div style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: '40%',
-          background: 'linear-gradient(to top, rgba(12,15,15,0.85) 0%, transparent 100%)',
+          gridArea: '1 / 1',
+          width: '100%',
+          height: '100%',
+          background: 'linear-gradient(180deg, rgba(12, 15, 15, 0.1) 0%, rgba(12, 15, 15, 0.9) 100%)',
           zIndex: 3,
           pointerEvents: 'none'
         }} />
 
         {/* Static Centered Actions Overlay */}
-        <div className="hero-centered-content" style={{ zIndex: 10, position: 'absolute', bottom: '40px', width: '100%', left: 0 }}>
+        <div className="hero-centered-content" style={{ zIndex: 10, position: 'absolute', bottom: '80px', width: '100%', left: 0 }}>
           <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <button className="btn-primary" onClick={() => handleScroll('collections')}>
               View Collections
@@ -99,107 +97,42 @@ export const Hero: React.FC<HeroProps> = ({
         {/* Slider Controls */}
         {activeBanners.length > 1 && (
           <>
-            {/* Left Arrow */}
             <button 
               onClick={handlePrev}
               style={{
-                position: 'absolute',
-                left: '20px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                zIndex: 12,
-                background: 'rgba(0, 0, 0, 0.3)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                color: '#fff',
-                width: '44px',
-                height: '44px',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                backdropFilter: 'blur(4px)'
-              }}
-              aria-label="Previous slide"
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'var(--color-accent-gold)';
-                e.currentTarget.style.color = 'var(--color-accent-gold)';
-                e.currentTarget.style.background = 'rgba(0, 0, 0, 0.5)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
-                e.currentTarget.style.color = '#fff';
-                e.currentTarget.style.background = 'rgba(0, 0, 0, 0.3)';
+                position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)',
+                zIndex: 12, background: 'rgba(0, 0, 0, 0.3)', border: '1px solid rgba(255, 255, 255, 0.08)',
+                color: '#fff', width: '44px', height: '44px', borderRadius: '50%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+                transition: 'all 0.3s ease', backdropFilter: 'blur(4px)'
               }}
             >
               <ChevronLeft size={24} />
             </button>
 
-            {/* Right Arrow */}
             <button 
               onClick={handleNext}
               style={{
-                position: 'absolute',
-                right: '20px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                zIndex: 12,
-                background: 'rgba(0, 0, 0, 0.3)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                color: '#fff',
-                width: '44px',
-                height: '44px',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                backdropFilter: 'blur(4px)'
-              }}
-              aria-label="Next slide"
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'var(--color-accent-gold)';
-                e.currentTarget.style.color = 'var(--color-accent-gold)';
-                e.currentTarget.style.background = 'rgba(0, 0, 0, 0.5)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
-                e.currentTarget.style.color = '#fff';
-                e.currentTarget.style.background = 'rgba(0, 0, 0, 0.3)';
+                position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)',
+                zIndex: 12, background: 'rgba(0, 0, 0, 0.3)', border: '1px solid rgba(255, 255, 255, 0.08)',
+                color: '#fff', width: '44px', height: '44px', borderRadius: '50%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+                transition: 'all 0.3s ease', backdropFilter: 'blur(4px)'
               }}
             >
               <ChevronRight size={24} />
             </button>
 
-            {/* Indicators / Dots */}
-            <div 
-              style={{
-                position: 'absolute',
-                bottom: '24px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                zIndex: 12,
-                display: 'flex',
-                gap: '10px'
-              }}
-            >
+            <div style={{ position: 'absolute', bottom: '50px', left: '50%', transform: 'translateX(-50%)', zIndex: 12, display: 'flex', gap: '10px' }}>
               {activeBanners.map((_, index) => (
                 <button
                   key={index}
                   onClick={(e) => { e.stopPropagation(); setCurrentSlide(index); }}
                   style={{
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '50%',
-                    border: 'none',
+                    width: '8px', height: '8px', borderRadius: '50%', border: 'none',
                     background: currentSlide === index ? 'var(--color-accent-gold)' : 'rgba(255, 255, 255, 0.3)',
-                    cursor: 'pointer',
-                    padding: 0,
-                    transition: 'all 0.3s ease'
+                    cursor: 'pointer', padding: 0, transition: 'all 0.3s ease'
                   }}
-                  aria-label={`Go to slide ${index + 1}`}
                 />
               ))}
             </div>
