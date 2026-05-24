@@ -124,7 +124,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   // App settings form state
   const [settingsBanners, setSettingsBanners] = useState<string[]>(() => {
     const arr = [...(settings?.heroBanners || [])];
-    while (arr.length < 4) {
+    while (arr.length < 2) {
       arr.push(arr.length === 0 ? settings?.heroBannerUrl || '/hero_desktop.jpg' : '');
     }
     return arr;
@@ -132,7 +132,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   
   const [settingsMobileBanners, setSettingsMobileBanners] = useState<string[]>(() => {
     const arr = [...(settings?.heroMobileBanners || [])];
-    while (arr.length < 4) {
+    while (arr.length < 2) {
       arr.push(arr.length === 0 ? settings?.heroMobileBannerUrl || '' : '');
     }
     return arr;
@@ -866,7 +866,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <h3 className="headline-sm" style={{ fontSize: '16px', color: 'var(--color-accent-gold)', marginBottom: '16px' }}>Desktop Hero Banners</h3>
                   <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>Upload up to 4 ultra-wide banners for laptops/desktop screens.</p>
                   
-                  {[0, 1, 2, 3].map(idx => (
+                  {[0, 1].map(idx => (
                     <div key={idx} style={{ marginBottom: '20px', display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
                       <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-secondary)', minWidth: '60px' }}>Slide {idx + 1}</span>
                       
@@ -904,7 +904,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <h3 className="headline-sm" style={{ fontSize: '16px', color: 'var(--color-accent-gold)', marginBottom: '16px' }}>Mobile Hero Banners</h3>
                   <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>Upload tall portrait banners for smartphones.</p>
                   
-                  {[0, 1, 2, 3].map(idx => (
+                  {[0, 1].map(idx => (
                     <div key={idx} style={{ marginBottom: '20px', display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
                       <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-secondary)', minWidth: '60px' }}>Slide {idx + 1}</span>
                       
