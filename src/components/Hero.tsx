@@ -22,7 +22,21 @@ export const Hero: React.FC<HeroProps> = ({
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const activeBanners = (isMobile && mobileBanners.length > 0 ? mobileBanners : banners).filter(banner => banner && banner.trim() !== '');
+  const defaultBanners = [
+    '/hero_banner.jpg',
+    '/hero_banner_2.jpg'
+  ];
+  
+  const defaultMobileBanners = [
+    '/mobile_hero_1.jpg',
+    '/mobile_hero_2.jpg'
+  ];
+
+  const sourceBanners = isMobile && mobileBanners.length > 0 && mobileBanners.some(b => b.trim() !== '')
+    ? mobileBanners
+    : (banners.length > 0 && banners.some(b => b.trim() !== '') ? banners : (isMobile ? defaultMobileBanners : defaultBanners));
+
+  const activeBanners = sourceBanners.filter(banner => banner && banner.trim() !== '');
 
   // Auto-play timer
   useEffect(() => {
