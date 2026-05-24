@@ -3,38 +3,20 @@ import { getImageUrl } from '../lib/supabase';
 
 interface HeroProps {
   banners?: string[];
-  mobileBanners?: string[];
   onExplore?: () => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({ 
-  banners = [],
-  mobileBanners = []
+  banners = []
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   const defaultBanners = [
     '/hero_banner.jpg',
     '/hero_banner_2.jpg'
   ];
-  
-  const defaultMobileBanners = [
-    '/mobile_hero_1.jpg',
-    '/mobile_hero_2.jpg'
-  ];
 
-  const sourceBanners = isMobile && mobileBanners.length > 0 && mobileBanners.some(b => b.trim() !== '')
-    ? mobileBanners
-    : (banners.length > 0 && banners.some(b => b.trim() !== '') ? banners : (isMobile ? defaultMobileBanners : defaultBanners));
-
+  const sourceBanners = banners.length > 0 && banners.some(b => b.trim() !== '') ? banners : defaultBanners;
   const activeBanners = sourceBanners.filter(banner => banner && banner.trim() !== '');
 
   // Auto-play timer
