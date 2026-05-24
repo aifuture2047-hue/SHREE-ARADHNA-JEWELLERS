@@ -43,6 +43,7 @@ body {
   font-weight: 400;
   line-height: 1.6;
   overflow-x: hidden;
+  padding-top: 36px; /* offset for fixed rate ticker */
   -webkit-font-smoothing: antialiased;
 }
 
@@ -224,10 +225,14 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-text-primary);
   height: 36px;
   overflow: hidden;
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   display: flex;
   align-items: center;
-  z-index: 1000;
+  z-index: 1100;
 }
 
 .rate-ticker-content {
@@ -267,7 +272,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Sticky Header - Luxury Green Glassmorphism */
 .sticky-header {
   position: sticky;
-  top: 0;
+  top: 36px;
   background-color: rgba(4, 28, 20, 0.9); /* Dark Emerald green */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
