@@ -400,7 +400,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         </div>
         <h2 className="headline-sm" style={{ marginBottom: '8px' }}>Security Access Required</h2>
         <p className="body-md" style={{ color: 'var(--color-text-secondary)', marginBottom: '32px' }}>
-          Please authenticate to enter the Shree Aradhna workspace.
+          Please authenticate to enter the New Gayatri workspace.
         </p>
 
         {loginError && (

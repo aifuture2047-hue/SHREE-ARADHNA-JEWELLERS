@@ -53,7 +53,7 @@ export const Header: React.FC<HeaderProps> = ({ currentView, setView }) => {
         {/* Center: Brand Identity Logo (Single line elegant serif) */}
         <div className="header-brand">
           <a href="/" onClick={(e) => { e.preventDefault(); setView('storefront'); }} className="header-brand-link">
-            <span className="brand-title-serif">Shree Aradhna Jewellers</span>
+            <span className="brand-title-serif">New Gayatri Jewellers</span>
           </a>
         </div>
 

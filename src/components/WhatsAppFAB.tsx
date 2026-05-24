@@ -5,7 +5,7 @@ export const WhatsAppFAB: React.FC = () => {
   const handleWhatsAppClick = () => {
     const phoneNumber = '919638888170'; // Official contact phone number
     const text = encodeURIComponent(
-      "Hello Shree Aradhna Jewellers, I would like to inquire about your custom designs and heritage collections."
+      "Hello New Gayatri Jewellers, I would like to inquire about your custom designs and heritage collections."
     );
     window.open(`https://api.whatsapp.com/send?phone=${phoneNumber}&text=${text}`, '_blank');
   };

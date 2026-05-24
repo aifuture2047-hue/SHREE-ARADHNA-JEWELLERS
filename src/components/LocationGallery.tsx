@@ -89,7 +89,7 @@ export const LocationGallery: React.FC = () => {
               <div className="map-marker-pin" style={{ top: '48%', left: '48%' }}>
                 <div className="map-pin-pulse"></div>
                 <div className="map-label-card">
-                  <div className="map-label-name">Shree Aradhna Jewellers</div>
+                  <div className="map-label-name">New Gayatri Jewellers</div>
                   <div className="map-label-sub">Choksi Bazar</div>
                 </div>
               </div>

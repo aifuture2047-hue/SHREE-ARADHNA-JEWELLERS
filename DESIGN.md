@@ -1,5 +1,5 @@
 ---
-name: Aura of Aradhna
+name: New Gayatri Jewellers
 colors:
   surface: '#121414'
   surface-dim: '#121414'

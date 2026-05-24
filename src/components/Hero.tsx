@@ -10,7 +10,7 @@ interface HeroProps {
 export const Hero: React.FC<HeroProps> = ({ 
   bannerUrl = '/hero_banner.jpg', 
   title = 'Eternal Heritage\nHandcrafted Brilliance', 
-  subtitle = 'Welcome to Shree Aradhna Jewellers.' 
+  subtitle = 'Welcome to New Gayatri Jewellers.' 
 }) => {
   const handleScroll = (elementId: string) => {
     const element = document.getElementById(elementId);

@@ -1,4 +1,4 @@
-# 💎 Shree Aradhna Jewellers
+# 💎 New Gayatri Jewellers
 
 A premium luxury jewellery storefront built with **React + TypeScript + Vite**.
 
@@ -110,4 +110,4 @@ Access the admin panel via the **"Admin Portal"** link in the footer.
 
 ---
 
-*© 2025 Shree Aradhna Jewellers. All rights reserved.*
+*© 2025 New Gayatri Jewellers. All rights reserved.*

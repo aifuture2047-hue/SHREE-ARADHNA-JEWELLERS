@@ -122,7 +122,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
     onInquire(product);
     const phoneNumber = '919638888170'; // Official contact phone number
     const text = encodeURIComponent(
-      `Hello Shree Aradhna Jewellers, I am interested in inquiring about the following piece from your collection:\n\n` +
+      `Hello New Gayatri Jewellers, I am interested in inquiring about the following piece from your collection:\n\n` +
       `Product: ${product.title}\n` +
       `Code: ${product.itemCode}\n` +
       `Weight: ${product.weight}g\n` +
@@ -368,7 +368,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
               })()}
 
               <p className="modal-description" style={{ marginTop: 0, marginBottom: '24px' }}>
-                {selectedProduct.description || "A masterfully handcrafted heirloom piece from our signature range, carrying the certificate of authenticity and hallmarking of Shree Aradhna Jewellers."}
+                {selectedProduct.description || "A masterfully handcrafted heirloom piece from our signature range, carrying the certificate of authenticity and hallmarking of New Gayatri Jewellers."}
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>

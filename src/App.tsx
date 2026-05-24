@@ -81,7 +81,7 @@ const INITIAL_PRODUCTS: Product[] = [
     makingCharge: 14,
     weight: 42.1,
     imageUrl: '/hero_necklace.png',
-    description: 'The crowning piece of the Aura of Aradhna collection, featuring floating modular gold leaves adorned with micro-brilliant diamonds.'
+    description: 'The crowning piece of our heritage collection, featuring floating modular gold leaves adorned with micro-brilliant diamonds.'
   }
 ];
 
@@ -124,7 +124,7 @@ function App() {
     return {
       heroBannerUrl: '/hero_banner.jpg',
       heroTitle: 'Eternal Heritage\nHandcrafted Brilliance',
-      heroSubtitle: 'Welcome to Shree Aradhna Jewellers. Explore our premium collection of 22KT gold, 18KT gold, and fine silver ornaments custom-crafted for timeless luxury.',
+      heroSubtitle: 'Welcome to New Gayatri Jewellers. Explore our premium collection of 22KT gold, 18KT gold, and fine silver ornaments custom-crafted for timeless luxury.',
       collectionsBridalImage: '',
       collectionsDiamondImage: '',
       collectionsSilverImage: '',
@@ -287,9 +287,9 @@ function App() {
               <div className="grid-12">
                 <div style={{ gridColumn: '1 / span 5', display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'left' }}>
                   <span className="label-caps" style={{ color: 'var(--color-accent-gold)', marginBottom: '16px', display: 'block' }}>Our Legacy</span>
-                  <h2 className="headline-md" style={{ marginBottom: '24px' }}>The Legacy of Shree Aradhna</h2>
+                  <h2 className="headline-md" style={{ marginBottom: '24px' }}>The Legacy of New Gayatri</h2>
                   <p className="body-md" style={{ color: 'var(--color-text-secondary)', marginBottom: '24px' }}>
-                    Established on the foundations of absolute trust, Shree Aradhna Jewellers stands as a beacon of artisanal mastery. Each piece is designed as a wearable sculpture, combining strict geometric precision with natural diamond cuts.
+                    Established on the foundations of absolute trust, New Gayatri Jewellers stands as a beacon of artisanal mastery. Each piece is designed as a wearable sculpture, combining strict geometric precision with natural diamond cuts.
                   </p>
                   <p className="body-md" style={{ color: 'var(--color-text-secondary)' }}>
                     Our metals are ethically sourced, 100% hallmarked, and meticulously hand-forged under master supervision to ensure investment-grade quality.
@@ -351,7 +351,7 @@ function App() {
             <div className="container">
               <div className="footer-grid">
                 <div className="footer-brand-wrap">
-                  <h3 className="headline-sm footer-title" style={{ color: 'var(--color-text-primary)' }}>SHREE ARADHNA JEWELLERS</h3>
+                  <h3 className="headline-sm footer-title" style={{ color: 'var(--color-text-primary)' }}>NEW GAYATRI JEWELLERS</h3>
                   <p className="body-md" style={{ color: 'var(--color-text-secondary)', fontSize: '14px', maxWidth: '360px' }}>
                     Authentic heritage, modern architectural shapes, and verified bullion assets since inception. Designed for exclusive investment and beauty.
                   </p>
@@ -379,7 +379,7 @@ function App() {
               </div>
 
               <div className="footer-bottom">
-                <span>© Shree Aradhna Jewellers. Crafting Trust since 1995.</span>
+                <span>© New Gayatri Jewellers. Crafting Trust since 1995.</span>
                 <span style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center' }}>
                   <a 
                     href="#admin" 
