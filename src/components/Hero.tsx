@@ -118,50 +118,6 @@ export const Hero: React.FC<HeroProps> = ({
           </div>
         </div>
 
-        {/* Slider Controls */}
-        {activeBanners.length > 1 && (
-          <>
-            <button 
-              onClick={handlePrev}
-              style={{
-                position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)',
-                zIndex: 12, background: 'rgba(0, 0, 0, 0.3)', border: '1px solid rgba(255, 255, 255, 0.08)',
-                color: '#fff', width: '44px', height: '44px', borderRadius: '50%',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-                transition: 'all 0.3s ease', backdropFilter: 'blur(4px)'
-              }}
-            >
-              <ChevronLeft size={24} />
-            </button>
-
-            <button 
-              onClick={handleNext}
-              style={{
-                position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)',
-                zIndex: 12, background: 'rgba(0, 0, 0, 0.3)', border: '1px solid rgba(255, 255, 255, 0.08)',
-                color: '#fff', width: '44px', height: '44px', borderRadius: '50%',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-                transition: 'all 0.3s ease', backdropFilter: 'blur(4px)'
-              }}
-            >
-              <ChevronRight size={24} />
-            </button>
-
-            <div style={{ position: 'absolute', bottom: '50px', left: '50%', transform: 'translateX(-50%)', zIndex: 12, display: 'flex', gap: '10px' }}>
-              {activeBanners.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={(e) => { e.stopPropagation(); setCurrentSlide(index); }}
-                  style={{
-                    width: '8px', height: '8px', borderRadius: '50%', border: 'none',
-                    background: currentSlide === index ? 'var(--color-accent-gold)' : 'rgba(255, 255, 255, 0.3)',
-                    cursor: 'pointer', padding: 0, transition: 'all 0.3s ease'
-                  }}
-                />
-              ))}
-            </div>
-          </>
-        )}
       </div>
     </section>
   );
