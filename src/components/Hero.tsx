@@ -50,9 +50,27 @@ export const Hero: React.FC<HeroProps> = ({
               height: '100%',
               opacity: currentSlide === index ? 1 : 0,
               transition: 'opacity 1.2s ease-in-out',
-              zIndex: currentSlide === index ? 2 : 1
+              zIndex: currentSlide === index ? 2 : 1,
+              position: 'relative'
             }}
           >
+            {/* Blurred Background Layer for filling empty space with dynamic colors */}
+            <img
+              src={getImageUrl(banner)}
+              alt=""
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                filter: 'blur(40px) brightness(0.6)',
+                transform: 'scale(1.1)',
+                zIndex: -1
+              }}
+            />
+            {/* Sharp Foreground Image */}
             <img
               src={getImageUrl(banner)}
               alt={`Hero banner ${index + 1}`}
@@ -61,7 +79,9 @@ export const Hero: React.FC<HeroProps> = ({
                 height: '100%',
                 objectFit: 'contain',
                 display: 'block',
-                objectPosition: 'top center'
+                objectPosition: 'top center',
+                position: 'relative',
+                zIndex: 1
               }}
             />
           </div>
@@ -77,13 +97,13 @@ export const Hero: React.FC<HeroProps> = ({
           pointerEvents: 'none'
         }} />
 
-        {/* Static Centered Actions Overlay */}
-        <div className="hero-centered-content" style={{ zIndex: 10, position: 'absolute', bottom: '80px', width: '100%', left: 0 }}>
-          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button className="btn-primary" onClick={() => handleScroll('collections')}>
+        {/* Premium Centered Actions Overlay */}
+        <div className="hero-centered-content" style={{ zIndex: 10, position: 'absolute', bottom: '100px', width: '100%', left: 0 }}>
+          <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button className="btn-primary" onClick={() => handleScroll('collections')} style={{ minWidth: '180px', padding: '14px 32px', fontSize: '13px', letterSpacing: '2px', textTransform: 'uppercase' }}>
               View Collections
             </button>
-            <button className="btn-secondary" onClick={() => handleScroll('heritage')}>
+            <button className="btn-secondary" onClick={() => handleScroll('heritage')} style={{ minWidth: '180px', padding: '14px 32px', fontSize: '13px', letterSpacing: '2px', textTransform: 'uppercase', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(8px)' }}>
               Our Legacy
             </button>
           </div>
