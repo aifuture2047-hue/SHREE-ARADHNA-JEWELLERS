@@ -5,6 +5,7 @@ import {
   Settings as SettingsIcon
 } from 'lucide-react';
 import type { Product } from './ProductCatalog';
+import { uploadImage, isSupabaseConfigured } from '../lib/supabase';
 
 interface Rates {
   gold22k: number;
@@ -31,7 +32,8 @@ interface ContactMessage {
 }
 
 export interface AppSettings {
-  heroBannerUrl: string;
+  heroBanners: string[];
+  heroMobileBanners: string[];
   heroTitle: string;
   heroSubtitle: string;
   collectionsBridalImage: string;
@@ -40,6 +42,8 @@ export interface AppSettings {
   popupAdEnabled: boolean;
   popupAdImage: string;
   popupAdLink: string;
+  heroBannerUrl?: string; // legacy support
+  heroMobileBannerUrl?: string; // legacy support
 }
 
 interface AdminPanelProps {
@@ -105,6 +109,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [passcode, setPasscode] = useState('');
   const [loginError, setLoginError] = useState('');
   const [activeTab, setActiveTab] = useState<'overview' | 'rates' | 'inventory' | 'inquiries' | 'messages' | 'settings'>('overview');
+  const [uploadingState, setUploadingState] = useState<Record<string, boolean>>({});
 
   // Bullion form state
   const [gold22kInput, setGold22kInput] = useState(rates.gold22k);
@@ -115,9 +120,38 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [ratesUpdatedMsg, setRatesUpdatedMsg] = useState(false);
 
   // App settings form state
-  const [settingsBanner, setSettingsBanner] = useState(settings?.heroBannerUrl || '/hero_banner.jpg');
+  const [settingsBanners, setSettingsBanners] = useState<string[]>(() => {
+    const arr = [...(settings?.heroBanners || [])];
+    while (arr.length < 4) {
+      arr.push(arr.length === 0 ? settings?.heroBannerUrl || '/hero_desktop.jpg' : '');
+    }
+    return arr;
+  });
+  const [settingsMobileBanners, setSettingsMobileBanners] = useState<string[]>(() => {
+    const arr = [...(settings?.heroMobileBanners || [])];
+    while (arr.length < 4) {
+      arr.push(arr.length === 0 ? settings?.heroMobileBannerUrl || '/hero_banner.jpg' : '');
+    }
+    return arr;
+  });
   const [settingsTitle, setSettingsTitle] = useState(settings?.heroTitle || 'Eternal Heritage\nHandcrafted Brilliance');
   const [settingsSubtitle, setSettingsSubtitle] = useState(settings?.heroSubtitle || '');
+
+  const updateBannerAtIndex = (index: number, value: string) => {
+    setSettingsBanners(prev => {
+      const copy = [...prev];
+      copy[index] = value;
+      return copy;
+    });
+  };
+
+  const updateMobileBannerAtIndex = (index: number, value: string) => {
+    setSettingsMobileBanners(prev => {
+      const copy = [...prev];
+      copy[index] = value;
+      return copy;
+    });
+  };
   
   // Collections overrides state
   const [settingsCollectionsBridal, setSettingsCollectionsBridal] = useState(settings?.collectionsBridalImage || '');
@@ -150,147 +184,147 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [prodImage, setProdImage] = useState('');
   const [prodDesc, setProdDesc] = useState('');
 
+  const processAndUploadFile = (
+    file: File,
+    maxWidth: number,
+    maxHeight: number,
+    folder: string,
+    onSuccess: (url: string) => void,
+    uploadKey: string
+  ) => {
+    setUploadingState(prev => ({ ...prev, [uploadKey]: true }));
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height *= maxWidth / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width *= maxHeight / height;
+            height = maxHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob(async (blob) => {
+            if (!blob) {
+              setUploadingState(prev => ({ ...prev, [uploadKey]: false }));
+              return;
+            }
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+            if (isSupabaseConfigured) {
+              try {
+                const ext = file.name.split('.').pop() || 'jpg';
+                const path = `${folder}/${Date.now()}-${Math.floor(Math.random() * 10000)}.${ext}`;
+                const publicUrl = await uploadImage(blob, path);
+                onSuccess(publicUrl);
+              } catch (err) {
+                console.error('Supabase storage upload failed:', err);
+                alert('Supabase storage upload failed. Saving as local base64. Ensure you created a public bucket named "gallery".');
+                onSuccess(dataUrl);
+              } finally {
+                setUploadingState(prev => ({ ...prev, [uploadKey]: false }));
+              }
+            } else {
+              onSuccess(dataUrl);
+              setUploadingState(prev => ({ ...prev, [uploadKey]: false }));
+            }
+          }, 'image/jpeg', 0.7);
+        } else {
+          setUploadingState(prev => ({ ...prev, [uploadKey]: false }));
+        }
+      };
+      img.onerror = () => {
+        setUploadingState(prev => ({ ...prev, [uploadKey]: false }));
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.onerror = () => {
+      setUploadingState(prev => ({ ...prev, [uploadKey]: false }));
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 500;
-        const MAX_HEIGHT = 500;
-        let width = img.width;
-        let height = img.height;
-
-        if (width > height) {
-          if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
-          }
-        } else {
-          if (height > MAX_HEIGHT) {
-            width *= MAX_HEIGHT / height;
-            height = MAX_HEIGHT;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.drawImage(img, 0, 0, width, height);
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
-          setProdImage(dataUrl);
-        }
-      };
-      img.src = event.target?.result as string;
-    };
-    reader.readAsDataURL(file);
+    if (file) {
+      processAndUploadFile(file, 500, 500, 'products', setProdImage, 'product');
+    }
   };
 
-  const handleBannerFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBannerFileChangeAtIndex = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 1200;
-        const MAX_HEIGHT = 800;
-        let width = img.width;
-        let height = img.height;
-
-        if (width > height) {
-          if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
-          }
-        } else {
-          if (height > MAX_HEIGHT) {
-            width *= MAX_HEIGHT / height;
-            height = MAX_HEIGHT;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.drawImage(img, 0, 0, width, height);
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
-          setSettingsBanner(dataUrl);
-        }
-      };
-      img.src = event.target?.result as string;
-    };
-    reader.readAsDataURL(file);
+    if (file) {
+      processAndUploadFile(
+        file,
+        1200,
+        800,
+        'banners',
+        (url) => updateBannerAtIndex(index, url),
+        `banner-${index}`
+      );
+    }
   };
 
-  const compressCollectionsImage = (file: File, callback: (base64: string) => void) => {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 800;
-        const MAX_HEIGHT = 800;
-        let width = img.width;
-        let height = img.height;
-
-        if (width > height) {
-          if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
-          }
-        } else {
-          if (height > MAX_HEIGHT) {
-            width *= MAX_HEIGHT / height;
-            height = MAX_HEIGHT;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.drawImage(img, 0, 0, width, height);
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
-          callback(dataUrl);
-        }
-      };
-      img.src = event.target?.result as string;
-    };
-    reader.readAsDataURL(file);
+  const handleMobileBannerFileChangeAtIndex = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      processAndUploadFile(
+        file,
+        800,
+        1200,
+        'banners_mobile',
+        (url) => updateMobileBannerAtIndex(index, url),
+        `mobile-banner-${index}`
+      );
+    }
   };
 
   const handleCollectionsBridalFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) compressCollectionsImage(file, setSettingsCollectionsBridal);
+    if (file) {
+      processAndUploadFile(file, 800, 800, 'collections', setSettingsCollectionsBridal, 'bridal');
+    }
   };
 
   const handleCollectionsDiamondFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) compressCollectionsImage(file, setSettingsCollectionsDiamond);
+    if (file) {
+      processAndUploadFile(file, 800, 800, 'collections', setSettingsCollectionsDiamond, 'diamond');
+    }
   };
 
   const handleCollectionsSilverFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) compressCollectionsImage(file, setSettingsCollectionsSilver);
+    if (file) {
+      processAndUploadFile(file, 800, 800, 'collections', setSettingsCollectionsSilver, 'silver');
+    }
   };
 
   const handlePopupAdFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) compressCollectionsImage(file, setSettingsPopupAdImage);
+    if (file) {
+      processAndUploadFile(file, 800, 800, 'announcement', setSettingsPopupAdImage, 'popup');
+    }
   };
 
   const handleSaveSettings = (e: React.FormEvent) => {
     e.preventDefault();
     setSettings({
-      heroBannerUrl: settingsBanner,
+      heroBanners: settingsBanners,
+      heroMobileBanners: settingsMobileBanners,
       heroTitle: settingsTitle,
       heroSubtitle: settingsSubtitle,
       collectionsBridalImage: settingsCollectionsBridal,
@@ -298,7 +332,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       collectionsSilverImage: settingsCollectionsSilver,
       popupAdEnabled: settingsPopupAdEnabled,
       popupAdImage: settingsPopupAdImage,
-      popupAdLink: settingsPopupAdLink
+      popupAdLink: settingsPopupAdLink,
+      heroBannerUrl: settingsBanners[0], // for legacy compatibility
+      heroMobileBannerUrl: settingsMobileBanners[0] // for legacy compatibility
     });
     setSettingsUpdatedMsg(true);
     setTimeout(() => setSettingsUpdatedMsg(false), 3000);
@@ -847,46 +883,77 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   />
                 </div>
 
-                <div className="calc-grid" style={{ marginTop: 0 }}>
-                  <div className="input-group">
-                    <label className="form-label">Upload New Hero Banner</label>
-                    <input 
-                      type="file" 
-                      accept="image/*"
-                      className="form-input" 
-                      onChange={handleBannerFileChange}
-                      style={{ padding: '8px 0', border: 'none', borderBottom: '1px solid var(--color-border-ivory)', height: 'auto', background: 'none' }}
-                    />
-                  </div>
-                  
-                  <div className="input-group">
-                    <label className="form-label">Or Paste Image URL / Path</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
-                      value={settingsBanner}
-                      onChange={(e) => setSettingsBanner(e.target.value)}
-                      placeholder="e.g. /hero_banner.jpg"
-                    />
-                  </div>
+                {/* Desktop Banners Section */}
+                <div style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '24px', marginBottom: '24px' }}>
+                  <h3 className="headline-sm" style={{ fontSize: '16px', color: 'var(--color-accent-gold)', marginBottom: '16px' }}>Desktop Hero Banner Slides (4 Images)</h3>
+                  {[0, 1, 2, 3].map(idx => (
+                    <div key={idx} style={{ marginBottom: '20px', display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+                      <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-secondary)', minWidth: '60px' }}>Slide {idx + 1}</span>
+                      
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleBannerFileChangeAtIndex(idx)}
+                        style={{ display: 'none' }}
+                        id={`desktop-banner-file-${idx}`}
+                      />
+                      <label htmlFor={`desktop-banner-file-${idx}`} className="btn-secondary" style={{ padding: '8px 16px', fontSize: '10px', height: 'auto', border: '1px solid var(--color-border-subtle)', cursor: 'pointer' }}>
+                        {uploadingState[`banner-${idx}`] ? 'Uploading...' : 'Upload File'}
+                      </label>
+                      
+                      <input 
+                        type="text" 
+                        className="form-input" 
+                        style={{ flex: 1, minWidth: '200px', padding: '6px 12px', fontSize: '13px' }}
+                        value={settingsBanners[idx]}
+                        onChange={(e) => updateBannerAtIndex(idx, e.target.value)}
+                        placeholder={`e.g. /hero_desktop.jpg or paste URL`}
+                      />
+
+                      {settingsBanners[idx] && (
+                        <div style={{ width: '50px', height: '40px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+                          <img src={settingsBanners[idx]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
 
-                {settingsBanner && (
-                  <div className="input-group">
-                    <label className="form-label">Banner Preview</label>
-                    <div style={{ width: '100%', height: '180px', overflow: 'hidden', border: '1px solid var(--color-border-subtle)', position: 'relative' }}>
-                      <div 
-                        style={{ 
-                          width: '100%', 
-                          height: '100%', 
-                          backgroundImage: `url(${settingsBanner})`, 
-                          backgroundSize: 'cover', 
-                          backgroundPosition: 'center' 
-                        }} 
+                {/* Mobile Banners Section */}
+                <div style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '24px', marginBottom: '24px' }}>
+                  <h3 className="headline-sm" style={{ fontSize: '16px', color: 'var(--color-accent-gold)', marginBottom: '16px' }}>Mobile Hero Banner Slides (4 Images)</h3>
+                  {[0, 1, 2, 3].map(idx => (
+                    <div key={idx} style={{ marginBottom: '20px', display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+                      <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-secondary)', minWidth: '60px' }}>Slide {idx + 1}</span>
+                      
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleMobileBannerFileChangeAtIndex(idx)}
+                        style={{ display: 'none' }}
+                        id={`mobile-banner-file-${idx}`}
                       />
+                      <label htmlFor={`mobile-banner-file-${idx}`} className="btn-secondary" style={{ padding: '8px 16px', fontSize: '10px', height: 'auto', border: '1px solid var(--color-border-subtle)', cursor: 'pointer' }}>
+                        {uploadingState[`mobile-banner-${idx}`] ? 'Uploading...' : 'Upload File'}
+                      </label>
+                      
+                      <input 
+                        type="text" 
+                        className="form-input" 
+                        style={{ flex: 1, minWidth: '200px', padding: '6px 12px', fontSize: '13px' }}
+                        value={settingsMobileBanners[idx]}
+                        onChange={(e) => updateMobileBannerAtIndex(idx, e.target.value)}
+                        placeholder={`e.g. /hero_banner.jpg or paste URL`}
+                      />
+
+                      {settingsMobileBanners[idx] && (
+                        <div style={{ width: '50px', height: '40px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+                          <img src={settingsMobileBanners[idx]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        </div>
+                      )}
                     </div>
-                  </div>
-                )}
+                  ))}
+                </div>
 
                 {/* Section: Collections Overrides */}
                 <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '24px', marginTop: '12px' }}>
@@ -904,7 +971,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         id="bridal-file"
                       />
                       <label htmlFor="bridal-file" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '10px', height: 'auto', border: '1px solid var(--color-border-subtle)', cursor: 'pointer' }}>
-                        Upload Bridal File
+                        {uploadingState['bridal'] ? 'Uploading...' : 'Upload Bridal File'}
                       </label>
                       <input 
                         type="text" 
@@ -932,7 +999,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         id="diamond-file"
                       />
                       <label htmlFor="diamond-file" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '10px', height: 'auto', border: '1px solid var(--color-border-subtle)', cursor: 'pointer' }}>
-                        Upload Diamond File
+                        {uploadingState['diamond'] ? 'Uploading...' : 'Upload Diamond File'}
                       </label>
                       <input 
                         type="text" 
@@ -960,7 +1027,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         id="silver-file"
                       />
                       <label htmlFor="silver-file" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '10px', height: 'auto', border: '1px solid var(--color-border-subtle)', cursor: 'pointer' }}>
-                        Upload Silver File
+                        {uploadingState['silver'] ? 'Uploading...' : 'Upload Silver File'}
                       </label>
                       <input 
                         type="text" 
@@ -1007,7 +1074,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         id="popup-file"
                       />
                       <label htmlFor="popup-file" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '10px', height: 'auto', border: '1px solid var(--color-border-subtle)', cursor: 'pointer' }}>
-                        Upload Popup Image
+                        {uploadingState['popup'] ? 'Uploading...' : 'Upload Popup Image'}
                       </label>
                       <input 
                         type="text" 
@@ -1144,7 +1211,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
                 <div className="calc-grid" style={{ marginTop: 0 }}>
                   <div className="input-group">
-                    <label className="form-label">Upload Image File</label>
+                    <label className="form-label">Upload Image File {uploadingState.product && <span style={{ color: 'var(--color-accent-gold)' }}>(Uploading...)</span>}</label>
                     <input 
                       type="file" 
                       accept="image/*"

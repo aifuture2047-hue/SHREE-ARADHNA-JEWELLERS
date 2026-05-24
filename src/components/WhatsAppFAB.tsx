@@ -3,7 +3,7 @@ import { MessageCircle } from 'lucide-react';
 
 export const WhatsAppFAB: React.FC = () => {
   const handleWhatsAppClick = () => {
-    const phoneNumber = '919638888170'; // Official contact phone number
+    const phoneNumber = '918866882947'; // Official contact phone number
     const text = encodeURIComponent(
       "Hello New Gayatri Jewellers, I would like to inquire about your custom designs and heritage collections."
     );

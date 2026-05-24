@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { X, MessageCircle, ArrowRight } from 'lucide-react';
+import { X, MessageCircle } from 'lucide-react';
+import { getImageUrl } from '../lib/supabase';
 
 export interface Product {
   id: string;
@@ -33,10 +34,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
   products, 
   rates, 
   onInquire, 
-  onRequestConsultation,
-  collectionsBridalImage,
-  collectionsDiamondImage,
-  collectionsSilverImage
+  onRequestConsultation
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -83,32 +81,13 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
     return 'Fine Silver';
   };
 
-  // Find products to map into our asymmetrical hero cards (based on their codes/keywords or position)
-  const getHighlightProduct = (key: 'bridal' | 'diamond' | 'silver') => {
-    if (key === 'bridal') {
-      // Find the choker necklace or fallback to first necklace, or default first item
-      return products.find(p => p.itemCode === 'SAA-8902' || p.category === 'necklaces') || products[0];
-    } else if (key === 'diamond') {
-      // Find the ring or fallback
-      return products.find(p => p.itemCode === 'SAA-4932' || p.category === 'rings') || products[0];
-    } else {
-      // Find silver bangles or fallback
-      return products.find(p => p.itemCode === 'SAA-3109' || p.category === 'bangles' || p.purity === 'silver') || products[0];
-    }
-  };
 
-  const bridalProduct = getHighlightProduct('bridal');
-  const diamondProduct = getHighlightProduct('diamond');
-  const silverProduct = getHighlightProduct('silver');
-
-  const bridalImage = collectionsBridalImage || bridalProduct?.imageUrl || '/hero_necklace.png';
-  const diamondImage = collectionsDiamondImage || diamondProduct?.imageUrl || '/ring.png';
-  const silverImage = collectionsSilverImage || silverProduct?.imageUrl || '/bangles.png';
 
   const categories = [
     { id: 'all', name: 'All Collections' },
     { id: 'rings', name: 'Rings' },
     { id: 'necklaces', name: 'Necklaces' },
+    { id: 'mangalsutra', name: 'Mangalsutras' },
     { id: 'earrings', name: 'Earrings' },
     { id: 'bangles', name: 'Bangles & Bracelets' }
   ];
@@ -120,7 +99,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
 
   const handleWhatsAppInquiry = (product: Product) => {
     onInquire(product);
-    const phoneNumber = '919638888170'; // Official contact phone number
+    const phoneNumber = '918866882947'; // Official contact phone number
     const text = encodeURIComponent(
       `Hello New Gayatri Jewellers, I am interested in inquiring about the following piece from your collection:\n\n` +
       `Product: ${product.title}\n` +
@@ -139,89 +118,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
       <div className="container">
         
         {/* ==========================================
-           SECTION 1: THE COLLECTIONS ASYMMETRICAL GRID
-           ========================================== */}
-        <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-          <h2 className="headline-md" style={{ textTransform: 'uppercase', letterSpacing: '0.1em' }}>The Collections</h2>
-          <div style={{ width: '60px', height: '1px', backgroundColor: 'var(--color-accent-gold)', margin: '16px auto 0' }}></div>
-        </div>
-
-        <div className="collections-asym-grid" style={{ marginBottom: '120px' }}>
-          {/* Left Column: Big Bridal Showcase Card */}
-          {bridalProduct && (
-            <div className="collections-left-col" onClick={() => setSelectedProduct(bridalProduct)}>
-              <div className="asym-card large">
-                <img 
-                  src={bridalImage} 
-                  alt={bridalProduct?.title || "Bridal Heritage"} 
-                  className="asym-image"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/hero_necklace.png';
-                  }}
-                />
-                <div className="asym-overlay">
-                  <span className="asym-tag">Pure Gold Traditions</span>
-                  <h3 className="asym-title">Bridal Heritage</h3>
-                  <span className="asym-link">
-                    Take our collection <ArrowRight size={12} />
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Right Column: Two Stacked Showcase Cards */}
-          <div className="collections-right-col">
-            {/* Top: Diamond Rings */}
-            {diamondProduct && (
-              <div onClick={() => setSelectedProduct(diamondProduct)}>
-                <div className="asym-card small">
-                  <img 
-                    src={diamondImage} 
-                    alt={diamondProduct?.title || "Diamond Radiance"} 
-                    className="asym-image"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/ring.png';
-                    }}
-                  />
-                  <div className="asym-overlay">
-                    <span className="asym-tag">Fine Diamond Rings</span>
-                    <h3 className="asym-title">Diamond Radiance</h3>
-                    <span className="asym-link">
-                      Take out <ArrowRight size={12} />
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Bottom: Antique Silver / Bangles */}
-            {silverProduct && (
-              <div onClick={() => setSelectedProduct(silverProduct)}>
-                <div className="asym-card small">
-                  <img 
-                    src={silverImage} 
-                    alt={silverProduct?.title || "Antique Silver"} 
-                    className="asym-image"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/bangles.png';
-                    }}
-                  />
-                  <div className="asym-overlay">
-                    <span className="asym-tag">Traditional Ornaments</span>
-                    <h3 className="asym-title">{silverProduct.purity === 'silver' ? 'Antique Silver' : 'Heritage Bangles'}</h3>
-                    <span className="asym-link">
-                      Take out <ArrowRight size={12} />
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* ==========================================
-           SECTION 2: ALL PRODUCTS BROWSER CATALOG
+           ALL PRODUCTS BROWSER CATALOG
            ========================================== */}
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
           <span className="label-caps" style={{ color: 'var(--color-accent-gold)', marginBottom: '12px', display: 'block' }}>Exclusive Gallery Curation</span>
@@ -259,7 +156,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                 >
                   <div className="product-image-container">
                     <img 
-                      src={product.imageUrl} 
+                      src={getImageUrl(product.imageUrl)} 
                       alt={product.title} 
                       className="product-image"
                       onError={(e) => {
@@ -293,7 +190,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             {/* Modal Image */}
             <div className="modal-image-wrap">
               <img 
-                src={selectedProduct.imageUrl} 
+                src={getImageUrl(selectedProduct.imageUrl)} 
                 alt={selectedProduct.title} 
                 className="modal-image"
                 onError={(e) => {

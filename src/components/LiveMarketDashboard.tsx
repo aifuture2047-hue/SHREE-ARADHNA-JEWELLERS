@@ -63,7 +63,7 @@ export const LiveMarketDashboard: React.FC<LiveMarketDashboardProps> = ({ rates 
         </div>
 
         {/* Dashboard Grid */}
-        <div className="market-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+        <div className="market-grid">
           {/* Card 1: Gold 22K */}
           <div className="market-card">
             {/* Sparkline Graphic */}

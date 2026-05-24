@@ -1,13 +1,22 @@
-import React from 'react';
-import { MapPin, Phone, Clock } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { MapPin, Phone, Clock, ExternalLink } from 'lucide-react';
+import { getImageUrl } from '../lib/supabase';
 
 export const LocationGallery: React.FC = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <section id="location" className="section location-section">
       <div className="container">
         <div className="grid-12">
           {/* Left Side: Contact Information Details */}
-          <div className="location-details-col" style={{ gridColumn: '1 / span 5' }}>
+          <div className="location-details-col" style={{ gridColumn: isMobile ? '1 / -1' : '1 / span 5' }}>
             <span 
               className="label-caps" 
               style={{ color: 'var(--color-accent-gold)', marginBottom: '16px', display: 'block' }}
@@ -15,7 +24,7 @@ export const LocationGallery: React.FC = () => {
               Visit Our Gallery
             </span>
             <h2 className="headline-md" style={{ marginBottom: '24px' }}>
-              Located in the heart of Gandhidham
+              Located in the heart of Rapar
             </h2>
             <div style={{ width: '40px', height: '1px', backgroundColor: 'var(--color-accent-gold)', marginBottom: '32px' }}></div>
             
@@ -28,9 +37,9 @@ export const LocationGallery: React.FC = () => {
                 <div>
                   <h4 className="location-info-title">Address</h4>
                   <p className="location-info-text">
-                    Shop No. 2, Gold Plaza, Sector 1A,<br />
-                    Main Bazar, Near Gandhidham Town Hall,<br />
-                    Gandhidham, Gujarat 370201
+                    Sant Shree Trikam Saheb Marg,<br />
+                    Main Bazar, Rapar,<br />
+                    Gujarat 370165
                   </p>
                 </div>
               </div>
@@ -43,7 +52,7 @@ export const LocationGallery: React.FC = () => {
                 <div>
                   <h4 className="location-info-title">Phone</h4>
                   <p className="location-info-text">
-                    +91 96388 88170
+                    +91 88668 82947
                   </p>
                 </div>
               </div>
@@ -61,37 +70,80 @@ export const LocationGallery: React.FC = () => {
                   </p>
                 </div>
               </div>
+
+              {/* Google Maps Link */}
+              <a 
+                href="https://share.google/px7QhvmRD6PV270nl" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  marginTop: '16px',
+                  padding: '12px 24px',
+                  backgroundColor: 'rgba(229, 197, 144, 0.1)',
+                  border: '1px solid var(--color-border-subtle)',
+                  color: 'var(--color-accent-gold)',
+                  textDecoration: 'none',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  letterSpacing: '0.05em',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.backgroundColor = 'rgba(229, 197, 144, 0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.backgroundColor = 'rgba(229, 197, 144, 0.1)';
+                }}
+              >
+                <ExternalLink size={14} />
+                Open in Google Maps
+              </a>
             </div>
           </div>
 
-          {/* Right Side: High-End Stylized Dark Vector Map */}
-          <div style={{ gridColumn: '6 / span 7', display: 'flex', alignItems: 'center' }}>
-            <div className="location-map-card">
-              {/* Grid Background */}
-              <div className="map-grid-bg"></div>
-
-              {/* Stylized Vector Roads & Blocks */}
-              <div className="map-road vertical" style={{ left: '48%', opacity: 0.7 }}></div>
-              <div className="map-road horizontal" style={{ top: '48%', opacity: 0.7 }}></div>
-              <div className="map-road horizontal" style={{ top: '20%', height: '12px', opacity: 0.4 }}></div>
-              <div className="map-road vertical" style={{ left: '15%', width: '12px', opacity: 0.4 }}></div>
-              <div className="map-road vertical" style={{ left: '80%', width: '12px', opacity: 0.4 }}></div>
-
-              {/* Decorative Blocks / Buildings */}
-              <div style={{ position: 'absolute', top: '10%', left: '25%', width: '80px', height: '60px', backgroundColor: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.03)' }}></div>
-              <div style={{ position: 'absolute', top: '55%', left: '5%', width: '120px', height: '100px', backgroundColor: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.03)' }}></div>
-              <div style={{ position: 'absolute', top: '60%', left: '60%', width: '90px', height: '120px', backgroundColor: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.03)' }}></div>
-              
-              {/* Water Body (Simulated Lake/River) */}
-              <div className="map-water" style={{ top: '5%', left: '65%', width: '180px', height: '120px' }}></div>
-
-              {/* Pulsing Marker Pin */}
-              <div className="map-marker-pin" style={{ top: '48%', left: '48%' }}>
-                <div className="map-pin-pulse"></div>
-                <div className="map-label-card">
-                  <div className="map-label-name">New Gayatri Jewellers</div>
-                  <div className="map-label-sub">Choksi Bazar</div>
-                </div>
+          {/* Right Side: Shop Photo */}
+          <div style={{ gridColumn: isMobile ? '1 / -1' : '6 / span 7', display: 'flex', alignItems: 'center' }}>
+            <div style={{
+              width: '100%',
+              borderRadius: '8px',
+              overflow: 'hidden',
+              border: '1px solid var(--color-border-subtle)',
+              position: 'relative',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.4)'
+            }}>
+              <img 
+                src={getImageUrl("/shop_photo.jpg")} 
+                alt="New Gayatri Jewellers — Shop Front, Main Bazar, Rapar" 
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                  display: 'block',
+                  objectFit: 'cover'
+                }}
+              />
+              <div style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                padding: '16px 20px',
+                background: 'linear-gradient(transparent, rgba(0,0,0,0.85))',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <MapPin size={14} style={{ color: 'var(--color-accent-gold)' }} />
+                <span style={{ 
+                  fontSize: '13px', 
+                  fontWeight: 600, 
+                  color: 'var(--color-text-primary)', 
+                  letterSpacing: '0.05em' 
+                }}>
+                  NEW GAYATRI JEWELLERS — Main Bazar, Rapar
+                </span>
               </div>
             </div>
           </div>

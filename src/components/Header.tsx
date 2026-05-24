@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 
 interface HeaderProps {
-  currentView: 'storefront' | 'admin';
-  setView: (view: 'storefront' | 'admin') => void;
+  currentView: 'storefront' | 'admin' | 'legacy';
+  setView: (view: 'storefront' | 'admin' | 'legacy') => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({ currentView, setView }) => {
@@ -37,7 +37,7 @@ export const Header: React.FC<HeaderProps> = ({ currentView, setView }) => {
             <>
               <a href="#collections" onClick={(e) => { e.preventDefault(); handleNavClick('collections'); }}>Collections</a>
               <a href="#contact" onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}>Bespoke</a>
-              <a href="#heritage" onClick={(e) => { e.preventDefault(); handleNavClick('heritage'); }}>Heritage</a>
+              <a href="#legacy" onClick={(e) => { e.preventDefault(); setView('legacy'); }}>Our Legacy</a>
             </>
           ) : (
             <button 
@@ -45,7 +45,7 @@ export const Header: React.FC<HeaderProps> = ({ currentView, setView }) => {
               className="btn-secondary"
               style={{ padding: '6px 14px', fontSize: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}
             >
-              ← Back Gallery
+              ← Back to Gallery
             </button>
           )}
         </nav>
@@ -100,12 +100,12 @@ export const Header: React.FC<HeaderProps> = ({ currentView, setView }) => {
             <>
               <a href="#collections" className="mobile-nav-link" onClick={(e) => { e.preventDefault(); handleNavClick('collections'); }}>Collections</a>
               <a href="#contact" className="mobile-nav-link" onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}>Bespoke</a>
-              <a href="#heritage" className="mobile-nav-link" onClick={(e) => { e.preventDefault(); handleNavClick('heritage'); }}>Heritage</a>
+              <a href="#legacy" className="mobile-nav-link" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); setView('legacy'); }}>Our Legacy</a>
             </>
           ) : (
             <>
-              <a href="#store" className="mobile-nav-link" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); setView('storefront'); }}>Back To Gallery</a>
-              <span className="mobile-nav-link" style={{ color: 'var(--color-accent-gold)' }}>Admin Mode Active</span>
+              <a href="#store" className="mobile-nav-link" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); setView('storefront'); }}>Back to Gallery</a>
+              <span className="mobile-nav-link" style={{ color: 'var(--color-accent-gold)' }}>{currentView === 'admin' ? 'Admin Mode Active' : 'Legacy Mode Active'}</span>
             </>
           )}
         </div>
