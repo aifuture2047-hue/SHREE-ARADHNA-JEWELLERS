@@ -56,19 +56,8 @@ function App() {
 
   // App Settings State (banner image & texts)
   const [settings, setSettingsState] = useState<AppSettings>(() => {
-    const defaultBanners = [
-      '/mobile_hero_3.png',
-      '/mobile_hero_1.jpg',
-      '/hero_desktop.jpg',
-      '/hero_necklace.png'
-    ];
-    
-    const defaultMobileBanners = [
-      '/mobile_hero_3.png',
-      '/mobile_hero_1.jpg',
-      '',
-      ''
-    ];
+    const defaultBanners: string[] = [];
+    const defaultMobileBanners: string[] = [];
 
     return {
       heroBanners: defaultBanners,

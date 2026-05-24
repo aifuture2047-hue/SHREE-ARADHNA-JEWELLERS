@@ -10,13 +10,12 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ 
-  banners = ['/hero_desktop.jpg']
+  banners = []
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   // ALWAYS use laptop/desktop banners, even on mobile
-  const resolvedBanners = banners.filter(banner => banner && banner.trim() !== '');
-  const activeBanners = resolvedBanners.length > 0 ? resolvedBanners : ['/hero_desktop.jpg'];
+  const activeBanners = banners.filter(banner => banner && banner.trim() !== '');
 
   // Auto-play timer
   useEffect(() => {
