@@ -65,8 +65,10 @@ export const Hero: React.FC<HeroProps> = ({
             width: '100%',
             height: '100%',
             backgroundImage: `linear-gradient(180deg, rgba(12, 15, 15, 0.1) 0%, rgba(12, 15, 15, 0.9) 100%), url(${getImageUrl(banner)})`,
-            backgroundSize: 'cover',
+            backgroundSize: 'contain',
             backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundColor: '#0c0f0f',
             opacity: currentSlide === index ? 1 : 0,
             transition: 'opacity 1.2s ease-in-out',
             zIndex: 1
