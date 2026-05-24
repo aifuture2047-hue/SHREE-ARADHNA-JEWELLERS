@@ -910,9 +910,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   />
                 </div>
 
-                {/* Desktop Banners Section */}
+                {/* Main Banners Section */}
                 <div style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '24px', marginBottom: '24px' }}>
-                  <h3 className="headline-sm" style={{ fontSize: '16px', color: 'var(--color-accent-gold)', marginBottom: '16px' }}>Desktop Hero Banner Slides (4 Images)</h3>
+                  <h3 className="headline-sm" style={{ fontSize: '16px', color: 'var(--color-accent-gold)', marginBottom: '16px' }}>Main Hero Banner Slides (For all devices)</h3>
                   {[0, 1, 2, 3].map(idx => (
                     <div key={idx} style={{ marginBottom: '20px', display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
                       <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-secondary)', minWidth: '60px' }}>Slide {idx + 1}</span>
@@ -946,41 +946,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   ))}
                 </div>
 
-                {/* Mobile Banners Section */}
-                <div style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '24px', marginBottom: '24px' }}>
-                  <h3 className="headline-sm" style={{ fontSize: '16px', color: 'var(--color-accent-gold)', marginBottom: '16px' }}>Mobile Hero Banner Slides (4 Images)</h3>
-                  {[0, 1, 2, 3].map(idx => (
-                    <div key={idx} style={{ marginBottom: '20px', display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-secondary)', minWidth: '60px' }}>Slide {idx + 1}</span>
-                      
-                      <input 
-                        type="file" 
-                        accept="image/*" 
-                        onChange={handleMobileBannerFileChangeAtIndex(idx)}
-                        style={{ display: 'none' }}
-                        id={`mobile-banner-file-${idx}`}
-                      />
-                      <label htmlFor={`mobile-banner-file-${idx}`} className="btn-secondary" style={{ padding: '8px 16px', fontSize: '10px', height: 'auto', border: '1px solid var(--color-border-subtle)', cursor: 'pointer' }}>
-                        {uploadingState[`mobile-banner-${idx}`] ? 'Uploading...' : 'Upload File'}
-                      </label>
-                      
-                      <input 
-                        type="text" 
-                        className="form-input" 
-                        style={{ flex: 1, minWidth: '200px', padding: '6px 12px', fontSize: '13px' }}
-                        value={settingsMobileBanners[idx]}
-                        onChange={(e) => updateMobileBannerAtIndex(idx, e.target.value)}
-                        placeholder={`e.g. /hero_banner.jpg or paste URL`}
-                      />
 
-                      {settingsMobileBanners[idx] && (
-                        <div style={{ width: '50px', height: '40px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
-                          <img src={settingsMobileBanners[idx]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
 
                 {/* Section: Collections Overrides */}
                 <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '24px', marginTop: '12px' }}>
