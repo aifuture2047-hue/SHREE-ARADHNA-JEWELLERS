@@ -334,7 +334,7 @@ function App() {
           .select('*')
           .order('created_at', { ascending: false });
         
-        if (!productsError && dbProducts) {
+        if (!productsError && dbProducts && dbProducts.length > 0) {
           setProducts(dbProducts.map(mapProductFromDB));
         }
 
