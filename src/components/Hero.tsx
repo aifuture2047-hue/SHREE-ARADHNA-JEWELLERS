@@ -3,16 +3,26 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { getImageUrl } from '../lib/supabase';
 
 interface HeroProps {
-  banners: string[];
+  banners?: string[];
+  mobileBanners?: string[];
+  onExplore?: () => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({ 
-  banners = []
+  banners = [],
+  mobileBanners = []
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // ALWAYS use laptop/desktop banners, even on mobile
-  const activeBanners = banners.filter(banner => banner && banner.trim() !== '');
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const activeBanners = (isMobile && mobileBanners.length > 0 ? mobileBanners : banners).filter(banner => banner && banner.trim() !== '');
 
   // Auto-play timer
   useEffect(() => {

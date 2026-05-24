@@ -129,10 +129,26 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     }
     return arr;
   });
+  
+  const [settingsMobileBanners, setSettingsMobileBanners] = useState<string[]>(() => {
+    const arr = [...(settings?.heroMobileBanners || [])];
+    while (arr.length < 4) {
+      arr.push(arr.length === 0 ? settings?.heroMobileBannerUrl || '' : '');
+    }
+    return arr;
+  });
 
 
   const updateBannerAtIndex = (index: number, value: string) => {
     setSettingsBanners(prev => {
+      const copy = [...prev];
+      copy[index] = value;
+      return copy;
+    });
+  };
+
+  const updateMobileBannerAtIndex = (index: number, value: string) => {
+    setSettingsMobileBanners(prev => {
       const copy = [...prev];
       copy[index] = value;
       return copy;
@@ -263,7 +279,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     }
   };
 
-
+  const handleMobileBannerFileChangeAtIndex = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      processAndUploadFile(
+        file,
+        800,
+        1200,
+        'banners_mobile',
+        (url) => updateMobileBannerAtIndex(index, url),
+        `mobile-banner-${index}`
+      );
+    }
+  };
 
   const handlePopupAdFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -297,7 +325,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     e.preventDefault();
     setSettings({
       heroBanners: settingsBanners,
-      heroMobileBanners: [],
+      heroMobileBanners: settingsMobileBanners,
       heroTitle: '',
       heroSubtitle: '',
       collectionsBridalImage: '',
@@ -307,7 +335,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       popupAdImage: settingsPopupAdImage,
       popupAdLink: settingsPopupAdLink,
       heroBannerUrl: settingsBanners[0],
-      heroMobileBannerUrl: '',
+      heroMobileBannerUrl: settingsMobileBanners[0],
       shopPhoto: settingsShopPhoto,
       modelImages: settingsModelImages
     });
@@ -833,10 +861,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             <form onSubmit={handleSaveSettings} className="calc-card" style={{ maxWidth: '700px', margin: 0 }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
 
-
-                {/* Main Banners Section */}
+                {/* Main Banners Section (Desktop) */}
                 <div style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '24px', marginBottom: '24px' }}>
-                  <h3 className="headline-sm" style={{ fontSize: '16px', color: 'var(--color-accent-gold)', marginBottom: '16px' }}>Main Hero Banner Slides (For all devices)</h3>
+                  <h3 className="headline-sm" style={{ fontSize: '16px', color: 'var(--color-accent-gold)', marginBottom: '16px' }}>Desktop Hero Banners</h3>
+                  <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>Upload up to 4 ultra-wide banners for laptops/desktop screens.</p>
+                  
                   {[0, 1, 2, 3].map(idx => (
                     <div key={idx} style={{ marginBottom: '20px', display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
                       <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-secondary)', minWidth: '60px' }}>Slide {idx + 1}</span>
@@ -870,10 +899,43 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   ))}
                 </div>
 
+                {/* Mobile Banners Section */}
+                <div style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '24px', marginBottom: '24px' }}>
+                  <h3 className="headline-sm" style={{ fontSize: '16px', color: 'var(--color-accent-gold)', marginBottom: '16px' }}>Mobile Hero Banners</h3>
+                  <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>Upload tall portrait banners for smartphones.</p>
+                  
+                  {[0, 1, 2, 3].map(idx => (
+                    <div key={idx} style={{ marginBottom: '20px', display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+                      <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-secondary)', minWidth: '60px' }}>Slide {idx + 1}</span>
+                      
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleMobileBannerFileChangeAtIndex(idx)}
+                        style={{ display: 'none' }}
+                        id={`mobile-banner-file-${idx}`}
+                      />
+                      <label htmlFor={`mobile-banner-file-${idx}`} className="btn-secondary" style={{ padding: '8px 16px', fontSize: '10px', height: 'auto', border: '1px solid var(--color-border-subtle)', cursor: 'pointer' }}>
+                        {uploadingState[`mobile-banner-${idx}`] ? 'Uploading...' : 'Upload File'}
+                      </label>
+                      
+                      <input 
+                        type="text" 
+                        className="form-input" 
+                        style={{ flex: 1, minWidth: '200px', padding: '6px 12px', fontSize: '13px' }}
+                        value={settingsMobileBanners[idx]}
+                        onChange={(e) => updateMobileBannerAtIndex(idx, e.target.value)}
+                        placeholder={`e.g. /hero_mobile.jpg or paste URL`}
+                      />
 
-
-
-
+                      {settingsMobileBanners[idx] && (
+                        <div style={{ width: '25px', height: '40px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+                          <img src={settingsMobileBanners[idx]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
                 {/* Section: Promotional Popup */}
                 <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '24px', marginTop: '12px' }}>
                   <h3 className="headline-sm" style={{ fontSize: '16px', color: 'var(--color-accent-gold)', marginBottom: '16px' }}>Storefront Announcement Popup</h3>
