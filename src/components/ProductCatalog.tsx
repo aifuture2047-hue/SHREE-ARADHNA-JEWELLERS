@@ -38,6 +38,12 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [showAll, setShowAll] = useState(false);
+
+  const handleCategoryChange = (catId: string) => {
+    setSelectedCategory(catId);
+    setShowAll(false);
+  };
 
   // Dynamic Price Calculation
   const getPriceBreakdown = (product: Product) => {
@@ -132,7 +138,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             <button
               key={cat.id}
               className={`filter-tab ${selectedCategory === cat.id ? 'active' : ''}`}
-              onClick={() => setSelectedCategory(cat.id)}
+              onClick={() => handleCategoryChange(cat.id)}
             >
               {cat.name}
             </button>
@@ -140,41 +146,147 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
         </div>
 
         {/* Product Cards */}
-        {filteredProducts.length === 0 ? (
+        {products.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--color-text-secondary)' }}>
             <p className="body-lg">New designs are currently being added.</p>
           </div>
+        ) : selectedCategory === 'all' ? (
+          /* Grouped Categories View: Show 3 per category */
+          <div>
+            {categories
+              .filter(cat => cat.id !== 'all')
+              .map(cat => {
+                const catProducts = products.filter(p => p.category.toLowerCase() === cat.id.toLowerCase());
+                if (catProducts.length === 0) return null;
+
+                const visibleProducts = catProducts.slice(0, 3);
+                return (
+                  <div key={cat.id} style={{ marginBottom: '50px' }}>
+                    <h4 className="headline-sm" style={{ 
+                      color: 'var(--color-accent-gold)', 
+                      textAlign: 'left', 
+                      marginTop: '30px', 
+                      marginBottom: '20px', 
+                      borderBottom: '1px solid rgba(229,197,144,0.1)', 
+                      paddingBottom: '10px',
+                      fontSize: '18px',
+                      letterSpacing: '0.05em'
+                    }}>
+                      {cat.name}
+                    </h4>
+                    
+                    <div className="products-grid">
+                      {visibleProducts.map(product => {
+                        const price = calculatePrice(product);
+                        return (
+                          <div 
+                            className="product-card" 
+                            key={product.id}
+                            onClick={() => setSelectedProduct(product)}
+                          >
+                            <div className="product-image-container">
+                              <img 
+                                src={getImageUrl(product.imageUrl)} 
+                                alt={product.title} 
+                                className="product-image"
+                                onError={(e) => {
+                                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=600';
+                                }}
+                              />
+                            </div>
+                            <div className="product-category">{getPurityLabel(product.purity)}</div>
+                            <h3 className="product-title">{product.title}</h3>
+                            <div className="product-price">
+                              {formatCurrency(price)}*
+                              <span className="label-caps" style={{ fontSize: '9px', color: 'var(--color-text-secondary)', letterSpacing: '0.05em', fontWeight: 'normal', display: 'block', marginTop: '4px' }}>
+                                (Incl. 3% GST)
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {catProducts.length > 3 && (
+                      <div style={{ textAlign: 'center', marginTop: '24px' }}>
+                        <button 
+                          className="btn-curator secondary" 
+                          onClick={() => {
+                            setSelectedCategory(cat.id);
+                            setShowAll(true);
+                            document.getElementById('collections')?.scrollIntoView({ behavior: 'smooth' });
+                          }}
+                          style={{ padding: '8px 24px', fontSize: '10px' }}
+                        >
+                          View More {cat.name} ({catProducts.length - 3} +)
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+          </div>
         ) : (
-          <div className="products-grid">
-            {filteredProducts.map(product => {
-              const price = calculatePrice(product);
-              return (
-                <div 
-                  className="product-card" 
-                  key={product.id}
-                  onClick={() => setSelectedProduct(product)}
-                >
-                  <div className="product-image-container">
-                    <img 
-                      src={getImageUrl(product.imageUrl)} 
-                      alt={product.title} 
-                      className="product-image"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=600';
-                      }}
-                    />
-                  </div>
-                  <div className="product-category">{getPurityLabel(product.purity)}</div>
-                  <h3 className="product-title">{product.title}</h3>
-                  <div className="product-price">
-                    {formatCurrency(price)}*
-                    <span className="label-caps" style={{ fontSize: '9px', color: 'var(--color-text-secondary)', letterSpacing: '0.05em', fontWeight: 'normal', display: 'block', marginTop: '4px' }}>
-                      (Incl. 3% GST)
-                    </span>
-                  </div>
+          /* Single Selected Category View */
+          <div>
+            {filteredProducts.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--color-text-secondary)' }}>
+                <p className="body-lg">No designs in this category currently.</p>
+              </div>
+            ) : (
+              <>
+                <div className="products-grid">
+                  {(showAll ? filteredProducts : filteredProducts.slice(0, 3)).map(product => {
+                    const price = calculatePrice(product);
+                    return (
+                      <div 
+                        className="product-card" 
+                        key={product.id}
+                        onClick={() => setSelectedProduct(product)}
+                      >
+                        <div className="product-image-container">
+                          <img 
+                            src={getImageUrl(product.imageUrl)} 
+                            alt={product.title} 
+                            className="product-image"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=600';
+                            }}
+                          />
+                        </div>
+                        <div className="product-category">{getPurityLabel(product.purity)}</div>
+                        <h3 className="product-title">{product.title}</h3>
+                        <div className="product-price">
+                          {formatCurrency(price)}*
+                          <span className="label-caps" style={{ fontSize: '9px', color: 'var(--color-text-secondary)', letterSpacing: '0.05em', fontWeight: 'normal', display: 'block', marginTop: '4px' }}>
+                            (Incl. 3% GST)
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
+
+                {filteredProducts.length > 3 && (
+                  <div style={{ textAlign: 'center', marginTop: '40px' }}>
+                    <button 
+                      className="btn-curator primary" 
+                      onClick={() => {
+                        if (!showAll) {
+                          setShowAll(true);
+                        } else {
+                          setShowAll(false);
+                          document.getElementById('collections')?.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }}
+                      style={{ minWidth: '180px' }}
+                    >
+                      {showAll ? 'View Less' : `View More Designs (${filteredProducts.length - 3} +)`}
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         )}
       </div>

@@ -21,6 +21,12 @@ interface Rates {
   silver: number;
   goldChange: 'up' | 'down';
   silverChange: 'up' | 'down';
+  gold22kDiff?: number;
+  gold22kPct?: number;
+  gold18kDiff?: number;
+  gold18kPct?: number;
+  silverDiff?: number;
+  silverPct?: number;
 }
 
 interface Inquiry {
@@ -190,11 +196,42 @@ function App() {
           .from('rates')
           .select('*')
           .order('updated_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
+          .limit(2);
         
-        if (!ratesError && dbRates) {
-          setRatesState(mapRatesFromDB(dbRates));
+        if (!ratesError && dbRates && dbRates.length > 0) {
+          const current = dbRates[0];
+          const previous = dbRates[1];
+          const mappedRates = mapRatesFromDB(current);
+          
+          if (previous) {
+            const prevGold22k = Number(previous.gold22k);
+            const prevGold18k = Number(previous.gold18k);
+            const prevSilver = Number(previous.silver);
+            
+            const g22Diff = mappedRates.gold22k - prevGold22k;
+            const g18Diff = mappedRates.gold18k - prevGold18k;
+            const silDiff = mappedRates.silver - prevSilver;
+            
+            mappedRates.gold22kDiff = g22Diff;
+            mappedRates.gold22kPct = prevGold22k > 0 ? (g22Diff / prevGold22k) * 100 : 0;
+            
+            mappedRates.gold18kDiff = g18Diff;
+            mappedRates.gold18kPct = prevGold18k > 0 ? (g18Diff / prevGold18k) * 100 : 0;
+            
+            mappedRates.silverDiff = silDiff;
+            mappedRates.silverPct = prevSilver > 0 ? (silDiff / prevSilver) * 100 : 0;
+            
+            mappedRates.goldChange = g22Diff >= 0 ? 'up' : 'down';
+            mappedRates.silverChange = silDiff >= 0 ? 'up' : 'down';
+          } else {
+            mappedRates.gold22kDiff = 0;
+            mappedRates.gold22kPct = 0;
+            mappedRates.gold18kDiff = 0;
+            mappedRates.gold18kPct = 0;
+            mappedRates.silverDiff = 0;
+            mappedRates.silverPct = 0;
+          }
+          setRatesState(mappedRates);
         }
 
         // 2. Fetch Settings
@@ -259,10 +296,31 @@ function App() {
 
   // Persist rates changes
   const setRates = async (newRates: Rates) => {
-    setRatesState(newRates);
+    // Calculate differences relative to the current active rates
+    const g22Diff = newRates.gold22k - rates.gold22k;
+    const g18Diff = newRates.gold18k - rates.gold18k;
+    const silDiff = newRates.silver - rates.silver;
+
+    const gold22kPct = rates.gold22k > 0 ? (g22Diff / rates.gold22k) * 100 : 0;
+    const gold18kPct = rates.gold18k > 0 ? (g18Diff / rates.gold18k) * 100 : 0;
+    const silverPct = rates.silver > 0 ? (silDiff / rates.silver) * 100 : 0;
+
+    const ratesWithDiffs: Rates = {
+      ...newRates,
+      gold22kDiff: g22Diff,
+      gold22kPct,
+      gold18kDiff: g18Diff,
+      gold18kPct,
+      silverDiff: silDiff,
+      silverPct,
+      goldChange: g22Diff >= 0 ? 'up' : 'down',
+      silverChange: silDiff >= 0 ? 'up' : 'down'
+    };
+
+    setRatesState(ratesWithDiffs);
     if (isSupabaseConfigured) {
       try {
-        await supabase.from('rates').insert([mapRatesToDB(newRates)]);
+        await supabase.from('rates').insert([mapRatesToDB(ratesWithDiffs)]);
       } catch (err) {
         console.error('Failed to sync rates to Supabase:', err);
       }

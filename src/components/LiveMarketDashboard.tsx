@@ -7,6 +7,12 @@ interface Rates {
   silver: number;
   goldChange: 'up' | 'down';
   silverChange: 'up' | 'down';
+  gold22kDiff?: number;
+  gold22kPct?: number;
+  gold18kDiff?: number;
+  gold18kPct?: number;
+  silverDiff?: number;
+  silverPct?: number;
 }
 
 interface LiveMarketDashboardProps {
@@ -22,26 +28,35 @@ export const LiveMarketDashboard: React.FC<LiveMarketDashboardProps> = ({ rates 
     }).format(amount);
   };
 
-  // Mock fluctuation values based on the rate direction
-  const getChangeDetails = (metal: 'gold22k' | 'gold18k' | 'silver', direction: 'up' | 'down') => {
-    if (metal === 'gold22k') {
-      return direction === 'up' 
-        ? { abs: '+₹380', pct: '+0.57%', color: '#518e78', path: 'M0,20 Q20,12 40,18 T80,5' }
-        : { abs: '-₹290', pct: '-0.43%', color: '#ffb4ab', path: 'M0,5 Q20,18 40,12 T80,25' };
-    } else if (metal === 'gold18k') {
-      return direction === 'up'
-        ? { abs: '+₹310', pct: '+0.56%', color: '#518e78', path: 'M0,20 Q20,15 40,16 T80,5' }
-        : { abs: '-₹240', pct: '-0.43%', color: '#ffb4ab', path: 'M0,5 Q20,16 40,15 T80,25' };
-    } else {
-      return direction === 'up'
-        ? { abs: '+₹850', pct: '+1.02%', color: '#518e78', path: 'M0,18 Q20,8 40,14 T80,4' }
-        : { abs: '-₹620', pct: '-0.73%', color: '#ffb4ab', path: 'M0,4 Q20,14 40,8 T80,22' };
+  // Calculate actual change details based on the rates history/differences
+  const getChangeDetails = (metal: 'gold22k' | 'gold18k' | 'silver') => {
+    const diff = (rates[`${metal}Diff` as keyof Rates] as number) ?? 0;
+    const pct = (rates[`${metal}Pct` as keyof Rates] as number) ?? 0;
+    const isUp = diff > 0;
+    const isDown = diff < 0;
+    const sign = isUp ? '+' : (isDown ? '-' : '');
+    const absVal = Math.abs(diff);
+    const absText = `${sign}₹${new Intl.NumberFormat('en-IN').format(absVal)}`;
+    const pctText = `${sign}${Math.abs(pct).toFixed(2)}%`;
+    const color = isUp ? '#518e78' : (isDown ? '#ffb4ab' : 'var(--color-accent-gold)');
+    
+    let path = 'M0,15 L80,15';
+    if (isUp) {
+      if (metal === 'gold22k') path = 'M0,20 Q20,12 40,18 T80,5';
+      else if (metal === 'gold18k') path = 'M0,20 Q20,15 40,16 T80,5';
+      else path = 'M0,18 Q20,8 40,14 T80,4';
+    } else if (isDown) {
+      if (metal === 'gold22k') path = 'M0,5 Q20,18 40,12 T80,25';
+      else if (metal === 'gold18k') path = 'M0,5 Q20,16 40,15 T80,25';
+      else path = 'M0,4 Q20,14 40,8 T80,22';
     }
+
+    return { abs: absText, pct: pctText, color, path, isUp, isDown };
   };
 
-  const g22Info = getChangeDetails('gold22k', rates.goldChange);
-  const g18Info = getChangeDetails('gold18k', rates.goldChange);
-  const silverInfo = getChangeDetails('silver', rates.silverChange);
+  const g22Info = getChangeDetails('gold22k');
+  const g18Info = getChangeDetails('gold18k');
+  const silverInfo = getChangeDetails('silver');
 
   return (
     <section id="market-dashboard" className="section market-section">
@@ -83,7 +98,8 @@ export const LiveMarketDashboard: React.FC<LiveMarketDashboardProps> = ({ rates 
             </div>
             <div className="market-card-change" style={{ color: g22Info.color }}>
               <span>{g22Info.abs} ({g22Info.pct})</span>
-              {rates.goldChange === 'up' ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+              {g22Info.isUp && <TrendingUp size={14} />}
+              {g22Info.isDown && <TrendingDown size={14} />}
             </div>
           </div>
 
@@ -106,7 +122,8 @@ export const LiveMarketDashboard: React.FC<LiveMarketDashboardProps> = ({ rates 
             </div>
             <div className="market-card-change" style={{ color: g18Info.color }}>
               <span>{g18Info.abs} ({g18Info.pct})</span>
-              {rates.goldChange === 'up' ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+              {g18Info.isUp && <TrendingUp size={14} />}
+              {g18Info.isDown && <TrendingDown size={14} />}
             </div>
           </div>
 
@@ -129,7 +146,8 @@ export const LiveMarketDashboard: React.FC<LiveMarketDashboardProps> = ({ rates 
             </div>
             <div className="market-card-change" style={{ color: silverInfo.color }}>
               <span>{silverInfo.abs} ({silverInfo.pct})</span>
-              {rates.silverChange === 'up' ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+              {silverInfo.isUp && <TrendingUp size={14} />}
+              {silverInfo.isDown && <TrendingDown size={14} />}
             </div>
           </div>
         </div>
