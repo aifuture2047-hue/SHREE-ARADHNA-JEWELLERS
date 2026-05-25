@@ -151,78 +151,54 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             <p className="body-lg">New designs are currently being added.</p>
           </div>
         ) : selectedCategory === 'all' ? (
-          /* Grouped Categories View: Show 3 per category */
+          /* All Collections View: Show 5 products, rest on clicking View More */
           <div>
-            {categories
-              .filter(cat => cat.id !== 'all')
-              .map(cat => {
-                const catProducts = products.filter(p => p.category.toLowerCase() === cat.id.toLowerCase());
-                if (catProducts.length === 0) return null;
-
-                const visibleProducts = catProducts.slice(0, 3);
-                return (
-                  <div key={cat.id} style={{ marginBottom: '50px' }}>
-                    <h4 className="headline-sm" style={{ 
-                      color: 'var(--color-accent-gold)', 
-                      textAlign: 'left', 
-                      marginTop: '30px', 
-                      marginBottom: '20px', 
-                      borderBottom: '1px solid rgba(229,197,144,0.1)', 
-                      paddingBottom: '10px',
-                      fontSize: '18px',
-                      letterSpacing: '0.05em'
-                    }}>
-                      {cat.name}
-                    </h4>
-                    
-                    <div className="products-grid">
-                      {visibleProducts.map(product => {
-                        return (
-                          <div 
-                            className="product-card" 
-                            key={product.id}
-                            onClick={() => setSelectedProduct(product)}
-                          >
-                            <div className="product-image-container">
-                              <img 
-                                src={getImageUrl(product.imageUrl)} 
-                                alt={product.title} 
-                                className="product-image"
-                                onError={(e) => {
-                                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=600';
-                                }}
-                              />
-                            </div>
-                            <div className="product-category">{getPurityLabel(product.purity)}</div>
-                            <h3 className="product-title">{product.title}</h3>
-                            <div className="product-specs-summary" style={{ marginTop: '10px', fontSize: '11px', color: 'var(--color-text-secondary)', display: 'flex', flexDirection: 'column', gap: '4px', textAlign: 'left', borderTop: '1px solid rgba(229,197,144,0.08)', paddingTop: '10px' }}>
-                              <div><span style={{ color: 'var(--color-accent-gold)' }}>Weight:</span> {product.weight.toFixed(2)}g</div>
-                              <div><span style={{ color: 'var(--color-accent-gold)' }}>Making:</span> {product.makingCharge}%</div>
-                              <div><span style={{ color: 'var(--color-accent-gold)' }}>Purity:</span> {product.purity === 'gold22k' ? '22K Gold' : product.purity === 'gold18k' ? '18K Gold' : 'Fine Silver'}</div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    {catProducts.length > 3 && (
-                      <div style={{ textAlign: 'center', marginTop: '24px' }}>
-                        <button 
-                          className="btn-curator secondary" 
-                          onClick={() => {
-                            setSelectedCategory(cat.id);
-                            setShowAll(true);
-                            document.getElementById('collections')?.scrollIntoView({ behavior: 'smooth' });
-                          }}
-                          style={{ padding: '8px 24px', fontSize: '10px' }}
-                        >
-                          View More {cat.name} ({catProducts.length - 3} +)
-                        </button>
-                      </div>
-                    )}
+            <div className="products-grid">
+              {(showAll ? products : products.slice(0, 5)).map(product => (
+                <div 
+                  className="product-card" 
+                  key={product.id}
+                  onClick={() => setSelectedProduct(product)}
+                >
+                  <div className="product-image-container">
+                    <img 
+                      src={getImageUrl(product.imageUrl)} 
+                      alt={product.title} 
+                      className="product-image"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=600';
+                      }}
+                    />
                   </div>
-                );
-              })}
+                  <div className="product-category">{getPurityLabel(product.purity)}</div>
+                  <h3 className="product-title">{product.title}</h3>
+                  <div className="product-specs-summary" style={{ marginTop: '10px', fontSize: '11px', color: 'var(--color-text-secondary)', display: 'flex', flexDirection: 'column', gap: '4px', textAlign: 'left', borderTop: '1px solid rgba(229,197,144,0.08)', paddingTop: '10px' }}>
+                    <div><span style={{ color: 'var(--color-accent-gold)' }}>Weight:</span> {product.weight.toFixed(2)}g</div>
+                    <div><span style={{ color: 'var(--color-accent-gold)' }}>Making:</span> {product.makingCharge}%</div>
+                    <div><span style={{ color: 'var(--color-accent-gold)' }}>Purity:</span> {product.purity === 'gold22k' ? '22K Gold' : product.purity === 'gold18k' ? '18K Gold' : 'Fine Silver'}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {products.length > 5 && (
+              <div style={{ textAlign: 'center', marginTop: '40px' }}>
+                <button 
+                  className="btn-curator primary" 
+                  onClick={() => {
+                    if (!showAll) {
+                      setShowAll(true);
+                    } else {
+                      setShowAll(false);
+                      document.getElementById('collections')?.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                  style={{ minWidth: '180px' }}
+                >
+                  {showAll ? 'View Less' : `View More Designs (${products.length - 5} +)`}
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           /* Single Selected Category View */
