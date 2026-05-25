@@ -443,9 +443,9 @@ function App() {
       {/* Router / Conditional Render */}
       {view === 'storefront' ? (
         <>
-          {/* Hero Banner Carousel */}
           <Hero 
             banners={settings.heroBanners}
+            onMilestoneClick={() => setView('legacy')}
           />
 
           {/* Live Market Dashboard Section (New UI requirement) */}

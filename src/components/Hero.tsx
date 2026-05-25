@@ -4,10 +4,12 @@ import { getImageUrl } from '../lib/supabase';
 interface HeroProps {
   banners?: string[];
   onExplore?: () => void;
+  onMilestoneClick?: () => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({ 
-  banners = []
+  banners = [],
+  onMilestoneClick
 }) => {
   const defaultBanners = [
     '/hero_banner.jpg',
@@ -55,7 +57,7 @@ export const Hero: React.FC<HeroProps> = ({
               </button>
               <button 
                 className="btn-curator secondary" 
-                onClick={() => handleScroll('heritage')}
+                onClick={onMilestoneClick}
               >
                 Our Milestone
               </button>
