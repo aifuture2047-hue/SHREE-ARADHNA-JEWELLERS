@@ -177,7 +177,6 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                     
                     <div className="products-grid">
                       {visibleProducts.map(product => {
-                        const price = calculatePrice(product);
                         return (
                           <div 
                             className="product-card" 
@@ -196,11 +195,10 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                             </div>
                             <div className="product-category">{getPurityLabel(product.purity)}</div>
                             <h3 className="product-title">{product.title}</h3>
-                            <div className="product-price">
-                              {formatCurrency(price)}*
-                              <span className="label-caps" style={{ fontSize: '9px', color: 'var(--color-text-secondary)', letterSpacing: '0.05em', fontWeight: 'normal', display: 'block', marginTop: '4px' }}>
-                                (Incl. 3% GST)
-                              </span>
+                            <div className="product-specs-summary" style={{ marginTop: '10px', fontSize: '11px', color: 'var(--color-text-secondary)', display: 'flex', flexDirection: 'column', gap: '4px', textAlign: 'left', borderTop: '1px solid rgba(229,197,144,0.08)', paddingTop: '10px' }}>
+                              <div><span style={{ color: 'var(--color-accent-gold)' }}>Weight:</span> {product.weight.toFixed(2)}g</div>
+                              <div><span style={{ color: 'var(--color-accent-gold)' }}>Making:</span> {product.makingCharge}%</div>
+                              <div><span style={{ color: 'var(--color-accent-gold)' }}>Purity:</span> {product.purity === 'gold22k' ? '22K Gold' : product.purity === 'gold18k' ? '18K Gold' : 'Fine Silver'}</div>
                             </div>
                           </div>
                         );
@@ -237,7 +235,6 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
               <>
                 <div className="products-grid">
                   {(showAll ? filteredProducts : filteredProducts.slice(0, 3)).map(product => {
-                    const price = calculatePrice(product);
                     return (
                       <div 
                         className="product-card" 
@@ -256,11 +253,10 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                         </div>
                         <div className="product-category">{getPurityLabel(product.purity)}</div>
                         <h3 className="product-title">{product.title}</h3>
-                        <div className="product-price">
-                          {formatCurrency(price)}*
-                          <span className="label-caps" style={{ fontSize: '9px', color: 'var(--color-text-secondary)', letterSpacing: '0.05em', fontWeight: 'normal', display: 'block', marginTop: '4px' }}>
-                            (Incl. 3% GST)
-                          </span>
+                        <div className="product-specs-summary" style={{ marginTop: '10px', fontSize: '11px', color: 'var(--color-text-secondary)', display: 'flex', flexDirection: 'column', gap: '4px', textAlign: 'left', borderTop: '1px solid rgba(229,197,144,0.08)', paddingTop: '10px' }}>
+                          <div><span style={{ color: 'var(--color-accent-gold)' }}>Weight:</span> {product.weight.toFixed(2)}g</div>
+                          <div><span style={{ color: 'var(--color-accent-gold)' }}>Making:</span> {product.makingCharge}%</div>
+                          <div><span style={{ color: 'var(--color-accent-gold)' }}>Purity:</span> {product.purity === 'gold22k' ? '22K Gold' : product.purity === 'gold18k' ? '18K Gold' : 'Fine Silver'}</div>
                         </div>
                       </div>
                     );
