@@ -58,10 +58,9 @@ export const LegacyPage: React.FC<LegacyPageProps> = ({ setView }) => {
       {/* Legacy Page Header Banner */}
       <section 
         style={{
-          backgroundImage: `linear-gradient(180deg, rgba(12, 15, 15, 0.4) 0%, rgba(12, 15, 15, 0.95) 100%), url(${getImageUrl('/hero_desktop.jpg')})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          height: isMobile ? '300px' : '400px',
+          backgroundImage: 'linear-gradient(180deg, #0f1212 0%, #070909 100%)',
+          borderBottom: '1px solid rgba(229, 197, 144, 0.05)',
+          height: isMobile ? '240px' : '320px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
