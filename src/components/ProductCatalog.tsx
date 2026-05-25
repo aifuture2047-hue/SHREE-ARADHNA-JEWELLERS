@@ -32,7 +32,7 @@ interface ProductCatalogProps {
 
 export const ProductCatalog: React.FC<ProductCatalogProps> = ({ 
   products, 
-  rates, 
+  rates: _rates, 
   onInquire, 
   onRequestConsultation
 }) => {
@@ -45,41 +45,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
     setShowAll(false);
   };
 
-  // Dynamic Price Calculation
-  const getPriceBreakdown = (product: Product) => {
-    let ratePerGram = 0;
-    if (product.purity === 'gold22k') {
-      ratePerGram = rates.gold22k / 10;
-    } else if (product.purity === 'gold18k') {
-      ratePerGram = rates.gold18k / 10;
-    } else if (product.purity === 'silver') {
-      ratePerGram = rates.silver / 1000;
-    }
-    const baseValue = product.weight * ratePerGram;
-    const makingCharges = baseValue * (product.makingCharge / 100);
-    const subtotal = baseValue + makingCharges;
-    const gst = subtotal * 0.03;
-    const total = subtotal + gst;
 
-    return {
-      baseValue: Math.round(baseValue),
-      makingCharges: Math.round(makingCharges),
-      gst: Math.round(gst),
-      total: Math.round(total)
-    };
-  };
-
-  const calculatePrice = (product: Product) => {
-    return getPriceBreakdown(product).total;
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0
-    }).format(amount);
-  };
 
   const getPurityLabel = (purity: 'gold22k' | 'gold18k' | 'silver') => {
     if (purity === 'gold22k') return '22K Gold';
@@ -112,8 +78,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
       `Code: ${product.itemCode}\n` +
       `Weight: ${product.weight}g\n` +
       `Purity: ${getPurityLabel(product.purity)}\n` +
-      `Making Charge: ${product.makingCharge}%\n` +
-      `Estimated Price: ${formatCurrency(calculatePrice(product))} (Incl. 3% GST)\n\n` +
+      `Making Charge: ${product.makingCharge}%\n\n` +
       `Please let me know its availability and the process to schedule an appointment. Thank you.`
     );
     window.open(`https://api.whatsapp.com/send?phone=${phoneNumber}&text=${text}`, '_blank');
@@ -306,49 +271,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                 </div>
               </div>
 
-              {/* Dynamic Price Breakdown Receipt */}
-              {(() => {
-                const breakdown = getPriceBreakdown(selectedProduct);
-                const ratePerGram = selectedProduct.purity === 'gold22k' 
-                  ? rates.gold22k / 10 
-                  : selectedProduct.purity === 'gold18k' 
-                  ? rates.gold18k / 10 
-                  : rates.silver / 1000;
-                
-                return (
-                  <div className="luxury-receipt-breakdown">
-                    <span className="label-caps" style={{ color: 'var(--color-accent-gold)', display: 'block', marginBottom: '16px', fontSize: '10px' }}>
-                      Investment Price Breakdown
-                    </span>
-                    
-                    <div className="luxury-receipt-row">
-                      <span>Metal Value ({selectedProduct.weight.toFixed(2)}g):</span>
-                      <span style={{ color: 'var(--color-text-primary)' }}>{formatCurrency(breakdown.baseValue)}</span>
-                    </div>
-                    
-                    <div className="luxury-receipt-row">
-                      <span>Making Charges ({selectedProduct.makingCharge}%):</span>
-                      <span style={{ color: 'var(--color-text-primary)' }}>{formatCurrency(breakdown.makingCharges)}</span>
-                    </div>
-                    
-                    <div className="luxury-receipt-row">
-                      <span>GST (3%):</span>
-                      <span style={{ color: 'var(--color-text-primary)' }}>{formatCurrency(breakdown.gst)}</span>
-                    </div>
-                    
-                    <div className="luxury-receipt-row total-row">
-                      <span>Estimated Total Price:</span>
-                      <span>{formatCurrency(breakdown.total)}*</span>
-                    </div>
-
-                    <span className="transparency-note">
-                      Calculated at daily rate of ₹{ratePerGram.toLocaleString('en-IN')}/gram for {selectedProduct.purity === 'gold22k' ? '22K Gold' : selectedProduct.purity === 'gold18k' ? '18K Gold' : 'Silver'}.
-                    </span>
-                  </div>
-                );
-              })()}
-
-              <p className="modal-description" style={{ marginTop: 0, marginBottom: '24px' }}>
+              <p className="modal-description" style={{ marginTop: '24px', marginBottom: '24px' }}>
                 {selectedProduct.description || "A masterfully handcrafted heirloom piece from our signature range, carrying the certificate of authenticity and hallmarking of New Gayatri Jewellers."}
               </p>
 
@@ -375,10 +298,6 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                   </button>
                 )}
               </div>
-              
-              <span style={{ fontSize: '11px', color: 'var(--color-text-secondary)', textAlign: 'center', marginTop: '16px', display: 'block' }}>
-                * Prices calculated dynamically with today's live bullion rates.
-              </span>
             </div>
           </div>
         </div>
