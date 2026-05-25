@@ -1734,3 +1734,326 @@ h1, h2, h3, h4, h5, h6 {
     transform: scale(1) translateY(0);
   }
 }
+
+/* ==========================================
+   EDITORIAL HERO SECTION & LUXURY BRANDING
+   ========================================== */
+
+.hero-editorial-sec {
+  position: relative;
+  overflow: hidden;
+  min-height: calc(100vh - 116px);
+  background-color: #070909; /* Ultra obsidian */
+  display: flex;
+  align-items: center;
+  padding: 80px 0;
+  border-bottom: 1px solid rgba(229, 197, 144, 0.05);
+}
+
+.hero-editorial-container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 80px;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 60px;
+  align-items: center;
+}
+
+@media (max-width: 1024px) {
+  .hero-editorial-container {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    padding: 0 40px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-editorial-sec {
+    min-height: auto;
+    padding: 60px 0 100px 0;
+  }
+  .hero-editorial-container {
+    padding: 0 20px;
+  }
+}
+
+/* Left Text Panel */
+.hero-editorial-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  animation: revealText 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (max-width: 1024px) {
+  .hero-editorial-text {
+    align-items: center;
+  }
+}
+
+.hero-editorial-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.hero-editorial-badge .gold-line {
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background-color: var(--color-accent-gold);
+  opacity: 0.6;
+}
+
+.hero-editorial-badge .badge-text {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  color: var(--color-accent-gold);
+}
+
+.hero-editorial-title {
+  font-family: var(--font-serif);
+  font-size: 54px;
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--color-text-primary);
+  margin-bottom: 24px;
+  letter-spacing: -0.01em;
+}
+
+.hero-editorial-title .gold-text {
+  color: var(--color-accent-gold);
+  font-style: italic;
+  font-weight: 400;
+}
+
+@media (max-width: 768px) {
+  .hero-editorial-title {
+    font-size: 38px;
+  }
+}
+
+.hero-editorial-subtitle {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+  margin-bottom: 40px;
+  max-width: 520px;
+}
+
+@media (max-width: 1024px) {
+  .hero-editorial-subtitle {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.hero-editorial-actions {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Luxe Call-To-Action Buttons */
+.btn-primary-luxe {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background-color: var(--color-accent-gold);
+  color: #070909;
+  border: 1px solid var(--color-accent-gold);
+  padding: 16px 36px;
+  cursor: pointer;
+  border-radius: 0px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.btn-primary-luxe:hover {
+  background-color: transparent;
+  color: var(--color-accent-gold);
+  box-shadow: 0 0 25px rgba(229, 197, 144, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-secondary-luxe {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background-color: rgba(255, 255, 255, 0.03);
+  color: var(--color-text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 16px 36px;
+  cursor: pointer;
+  border-radius: 0px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-secondary-luxe:hover {
+  border-color: var(--color-accent-gold);
+  color: var(--color-accent-gold);
+  background-color: rgba(229, 197, 144, 0.05);
+  transform: translateY(-2px);
+}
+
+/* Right Visual Panel with Double-Frame Styling */
+.hero-editorial-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.hero-image-frame {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  aspect-ratio: 4/5;
+  background-color: #121414;
+  border: 1px solid var(--color-border-subtle);
+  padding: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-image-frame:hover {
+  transform: scale(1.02);
+}
+
+.hero-image-inner-border {
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(229, 197, 144, 0.2);
+  overflow: hidden;
+  position: relative;
+}
+
+.hero-single-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: contrast(1.02) brightness(0.95);
+}
+
+.hero-image-frame:hover .hero-single-image {
+  transform: scale(1.05);
+}
+
+/* Corner Accents */
+.frame-corner {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-color: var(--color-accent-gold);
+  border-style: solid;
+  pointer-events: none;
+}
+
+.frame-corner.top-left {
+  top: 8px;
+  left: 8px;
+  border-width: 1px 0 0 1px;
+}
+
+.frame-corner.top-right {
+  top: 8px;
+  right: 8px;
+  border-width: 1px 1px 0 0;
+}
+
+.frame-corner.bottom-left {
+  bottom: 8px;
+  left: 8px;
+  border-width: 0 0 1px 1px;
+}
+
+.frame-corner.bottom-right {
+  bottom: 8px;
+  right: 8px;
+  border-width: 0 1px 1px 0;
+}
+
+/* Scroll Explorer */
+.hero-scroll-indicator {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  z-index: 5;
+  transition: opacity 0.3s;
+}
+
+.hero-scroll-indicator:hover {
+  opacity: 0.8;
+}
+
+.hero-scroll-indicator .scroll-text {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+}
+
+.hero-scroll-indicator .scroll-line-container {
+  width: 1px;
+  height: 48px;
+  background-color: rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-scroll-indicator .scroll-line-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  background-color: var(--color-accent-gold);
+  animation: scrollLineActive 2s cubic-bezier(0.76, 0, 0.24, 1) infinite;
+}
+
+@keyframes scrollLineActive {
+  0% {
+    top: -20px;
+  }
+  50% {
+    top: 48px;
+  }
+  100% {
+    top: 48px;
+  }
+}
+
+@keyframes revealText {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

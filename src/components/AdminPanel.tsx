@@ -124,10 +124,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   // App settings form state
   const [settingsBanners, setSettingsBanners] = useState<string[]>(() => {
     const arr = [...(settings?.heroBanners || [])];
-    while (arr.length < 2) {
-      arr.push(arr.length === 0 ? settings?.heroBannerUrl || '/hero_desktop.jpg' : '');
+    while (arr.length < 1) {
+      arr.push(settings?.heroBannerUrl || '/hero_desktop.jpg');
     }
-    return arr;
+    return arr.slice(0, 1);
   });
   
 
@@ -835,12 +835,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
                 {/* Main Banners Section (Desktop) */}
                 <div style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '24px', marginBottom: '24px' }}>
-                  <h3 className="headline-sm" style={{ fontSize: '16px', color: 'var(--color-accent-gold)', marginBottom: '16px' }}>Desktop Hero Banners</h3>
-                  <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>Upload up to 4 ultra-wide banners for laptops/desktop screens.</p>
+                  <h3 className="headline-sm" style={{ fontSize: '16px', color: 'var(--color-accent-gold)', marginBottom: '16px' }}>Homepage Hero Banner</h3>
+                  <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>Upload a single main banner image for the homepage hero section.</p>
                   
-                  {[0, 1].map(idx => (
+                  {[0].map(idx => (
                     <div key={idx} style={{ marginBottom: '20px', display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-secondary)', minWidth: '60px' }}>Slide {idx + 1}</span>
+                      <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-secondary)', minWidth: '80px' }}>Main Banner</span>
                       
                       <input 
                         type="file" 
@@ -857,7 +857,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         type="text" 
                         className="form-input" 
                         style={{ flex: 1, minWidth: '200px', padding: '6px 12px', fontSize: '13px' }}
-                        value={settingsBanners[idx]}
+                        value={settingsBanners[idx] || ''}
                         onChange={(e) => updateBannerAtIndex(idx, e.target.value)}
                         placeholder={`e.g. /hero_desktop.jpg or paste URL`}
                       />

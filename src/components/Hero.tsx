@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { getImageUrl } from '../lib/supabase';
 
 interface HeroProps {
@@ -9,24 +9,14 @@ interface HeroProps {
 export const Hero: React.FC<HeroProps> = ({ 
   banners = []
 }) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-
   const defaultBanners = [
     '/hero_banner.jpg',
-    '/hero_banner_2.jpg'
+    '/hero_desktop.jpg'
   ];
 
-  const sourceBanners = banners.length > 0 && banners.some(b => b.trim() !== '') ? banners : defaultBanners;
-  const activeBanners = sourceBanners.filter(banner => banner && banner.trim() !== '');
-
-  // Auto-play timer
-  useEffect(() => {
-    if (activeBanners.length <= 1) return;
-    const interval = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % activeBanners.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [activeBanners]);
+  // Get the first banner image
+  const activeBanners = banners.filter(banner => banner && banner.trim() !== '');
+  const bannerImage = activeBanners.length > 0 ? activeBanners[0] : defaultBanners[0];
 
   const handleScroll = (elementId: string) => {
     const element = document.getElementById(elementId);
@@ -35,69 +25,67 @@ export const Hero: React.FC<HeroProps> = ({
     }
   };
 
-  if (activeBanners.length === 0) return null;
-
   return (
-    <section className="hero-sec-full" style={{ position: 'relative', overflow: 'hidden', height: 'calc(100vh - 116px)', backgroundColor: '#0c0f0f' }}>
-      {/* Slides Container bounded to viewport height minus header */}
-      <div style={{ display: 'grid', width: '100%', height: '100%' }}>
-        {activeBanners.map((banner, index) => (
-          <div
-            key={index}
-            style={{
-              gridArea: '1 / 1',
-              width: '100%',
-              height: '100%',
-              opacity: currentSlide === index ? 1 : 0,
-              transition: 'opacity 1.2s ease-in-out',
-              zIndex: currentSlide === index ? 2 : 1,
-              position: 'relative',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: '#0c0f0f' // Clean solid dark background
-            }}
-          >
-            {/* Sharp Foreground Image */}
-            <img
-              src={getImageUrl(banner)}
-              alt={`Hero banner ${index + 1}`}
-              style={{
-                width: '100%',
-                height: '100%',
-                maxWidth: '1000px', // Prevent it from getting absurdly wide on huge screens if they use landscape
-                objectFit: 'contain',
-                display: 'block',
-                objectPosition: 'center center',
-                position: 'relative',
-                zIndex: 1
-              }}
-            />
+    <section className="hero-editorial-sec">
+      <div className="hero-editorial-container">
+        {/* Left Side: Brand Intro & Typography */}
+        <div className="hero-editorial-text">
+          <div className="hero-editorial-badge">
+            <span className="gold-line"></span>
+            <span className="badge-text">ESTABLISHED 1977</span>
+            <span className="gold-line"></span>
           </div>
-        ))}
-
-        {/* Minimal Gradient for text readability at the very bottom */}
-        <div style={{
-          gridArea: '1 / 1',
-          width: '100%',
-          height: '100%',
-          background: 'linear-gradient(180deg, rgba(12, 15, 15, 0) 50%, rgba(12, 15, 15, 0.95) 100%)',
-          zIndex: 3,
-          pointerEvents: 'none'
-        }} />
-
-        {/* Clean Centered Actions */}
-        <div className="hero-centered-content" style={{ zIndex: 10, position: 'absolute', bottom: '60px', width: '100%', left: 0 }}>
-          <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button className="btn-primary" onClick={() => handleScroll('collections')} style={{ minWidth: '160px', padding: '12px 28px', fontSize: '13px', letterSpacing: '1px', textTransform: 'uppercase', border: '1px solid var(--color-accent-gold)' }}>
+          
+          <h1 className="hero-editorial-title">
+            Eternal Heritage, <br />
+            <span className="gold-text">Handcrafted Brilliance.</span>
+          </h1>
+          
+          <p className="hero-editorial-subtitle">
+            Indulge in the finest selection of gold, diamond, and silver jewellery. Every masterpiece is crafted with absolute purity and curated to reflect your legacy.
+          </p>
+          
+          <div className="hero-editorial-actions">
+            <button 
+              className="btn-primary-luxe" 
+              onClick={() => handleScroll('collections')}
+            >
               View Collections
             </button>
-            <button className="btn-secondary" onClick={() => handleScroll('heritage')} style={{ minWidth: '160px', padding: '12px 28px', fontSize: '13px', letterSpacing: '1px', textTransform: 'uppercase', background: 'transparent', border: '1px solid rgba(255,255,255,0.2)' }}>
+            <button 
+              className="btn-secondary-luxe" 
+              onClick={() => handleScroll('heritage')}
+            >
               Our Legacy
             </button>
           </div>
         </div>
 
+        {/* Right Side: Gold-framed Single Banner Image */}
+        <div className="hero-editorial-visual">
+          <div className="hero-image-frame">
+            <div className="hero-image-inner-border">
+              <img
+                src={getImageUrl(bannerImage)}
+                alt="New Gayatri Jewellers Heritage Exhibition"
+                className="hero-single-image"
+              />
+            </div>
+            {/* Elegant absolute gold corner accents for the frame */}
+            <div className="frame-corner top-left"></div>
+            <div className="frame-corner top-right"></div>
+            <div className="frame-corner bottom-left"></div>
+            <div className="frame-corner bottom-right"></div>
+          </div>
+        </div>
+      </div>
+
+      {/* Modern animated vertical scroll indicator */}
+      <div className="hero-scroll-indicator" onClick={() => handleScroll('collections')}>
+        <span className="scroll-text">EXPLORE WORKSPACE</span>
+        <div className="scroll-line-container">
+          <span className="scroll-line-active"></span>
+        </div>
       </div>
     </section>
   );
