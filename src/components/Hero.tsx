@@ -85,12 +85,6 @@ export const Hero: React.FC<HeroProps> = ({
         </div>
 
       </div>
-
-      {/* Elegant minimalist scroll indicator */}
-      <div className="hero-gallery-scroll" onClick={() => handleScroll('collections')}>
-        <span className="scroll-arrow-dot"></span>
-        <span className="scroll-arrow-line"></span>
-      </div>
     </section>
   );
 };
