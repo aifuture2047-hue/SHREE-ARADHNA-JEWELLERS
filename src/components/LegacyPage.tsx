@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ShieldCheck, Award, Sparkles, BookOpen, Clock } from 'lucide-react';
+import { Award, Sparkles, BookOpen, Clock } from 'lucide-react';
 import { getImageUrl } from '../lib/supabase';
 
 interface LegacyPageProps {
@@ -70,7 +70,7 @@ export const LegacyPage: React.FC<LegacyPageProps> = ({ setView }) => {
       >
         <div className="container" style={{ textAlign: 'center' }}>
           <span className="label-caps" style={{ color: 'var(--color-accent-gold)', fontSize: '11px', letterSpacing: '0.25em', display: 'block', marginBottom: '16px' }}>
-            Our Roots & Milestones
+            OUR ROOTS & TIMELINE
           </span>
           <h1 className="display-lg" style={{ color: 'var(--color-text-primary)', marginBottom: '16px' }}>
             The Legacy of New Gayatri
@@ -81,42 +81,87 @@ export const LegacyPage: React.FC<LegacyPageProps> = ({ setView }) => {
         </div>
       </section>
 
-      {/* Core Principles & Founding Story */}
-      <section className="section" style={{ padding: '80px 0' }}>
+      {/* Core narrative & portrait sketch of founder */}
+      <section className="section" style={{ padding: '80px 0', borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
         <div className="container">
-          <div className="grid-12" style={{ gap: isMobile ? '32px' : '48px' }}>
-            <div style={{ gridColumn: isMobile ? '1 / -1' : '1 / span 6', textAlign: 'left', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              <span className="label-caps" style={{ color: 'var(--color-accent-gold)', marginBottom: '16px', display: 'block' }}>Since 1977</span>
-              <h2 className="headline-md" style={{ marginBottom: '24px' }}>A Commitment to Pure Gold</h2>
-              <p className="body-md" style={{ color: 'var(--color-text-secondary)', marginBottom: '20px', lineHeight: '1.8' }}>
-                New Gayatri Jewellers is founded on Kutch's rich jewelry legacy. Deeply integrated with families for generations, we understand that jewelry is more than an accessory—it represents a family heirloom and a verified bullion asset.
-              </p>
-              <p className="body-md" style={{ color: 'var(--color-text-secondary)', lineHeight: '1.8' }}>
-                Every gram of gold leaving our counters carries official government certification, representing pure investable quality combined with master-class artistic shaping.
-              </p>
-            </div>
+          <div className="grid-12" style={{ gap: isMobile ? '40px' : '60px', alignItems: 'center' }}>
             
-            <div style={{ gridColumn: isMobile ? '1 / -1' : '7 / span 6', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '24px' }}>
-              <div style={{ border: '1px solid var(--color-border-subtle)', padding: isMobile ? '24px' : '32px', backgroundColor: 'var(--color-surface-card)', display: 'flex', gap: '20px', alignItems: 'flex-start', textAlign: 'left' }}>
-                <ShieldCheck size={36} style={{ color: 'var(--color-accent-gold)', flexShrink: 0 }} />
-                <div>
-                  <h4 className="headline-sm" style={{ fontSize: '18px', marginBottom: '8px' }}>Government Hallmarking</h4>
-                  <p className="body-md" style={{ color: 'var(--color-text-secondary)', fontSize: '14px', margin: 0 }}>
-                    We verify every ornament weight, metal carat, and diamond profile. BIS hallmarked gold and certified solitaires ensure complete financial safety.
-                  </p>
+            {/* Left Column: Portrait Sketch (Full Visible) */}
+            <div style={{ gridColumn: isMobile ? '1 / -1' : '1 / span 5', display: 'flex', justifyContent: 'center' }}>
+              <div style={{
+                position: 'relative',
+                width: '100%',
+                maxWidth: '380px',
+                border: '1px solid var(--color-border-subtle)',
+                padding: '12px',
+                backgroundColor: 'var(--color-surface-card)',
+                boxShadow: '0 15px 30px rgba(0,0,0,0.5)'
+              }}>
+                <div style={{ border: '1px solid rgba(229, 197, 144, 0.2)', overflow: 'hidden' }}>
+                  <img
+                    src={getImageUrl('/founder_portrait.jpg')}
+                    alt="Founder of New Gayatri Jewellers"
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                      display: 'block',
+                      objectFit: 'contain',
+                      backgroundColor: '#ffffff', // Clean white background to fit the paper sketch
+                      filter: 'contrast(1.05)'
+                    }}
+                  />
                 </div>
+                {/* Elegant corner accents */}
+                <div className="frame-corner top-left" style={{ top: '6px', left: '6px' }}></div>
+                <div className="frame-corner top-right" style={{ top: '6px', right: '6px' }}></div>
+                <div className="frame-corner bottom-left" style={{ bottom: '6px', left: '6px' }}></div>
+                <div className="frame-corner bottom-right" style={{ bottom: '6px', right: '6px' }}></div>
               </div>
+            </div>
 
-              <div style={{ border: '1px solid var(--color-border-subtle)', padding: '32px', backgroundColor: 'var(--color-surface-card)', display: 'flex', gap: '20px', alignItems: 'flex-start', textAlign: 'left' }}>
-                <Award size={36} style={{ color: 'var(--color-accent-gold)', flexShrink: 0 }} />
-                <div>
-                  <h4 className="headline-sm" style={{ fontSize: '18px', marginBottom: '8px' }}>Principal Artisans</h4>
-                  <p className="body-md" style={{ color: 'var(--color-text-secondary)', fontSize: '14px', margin: 0 }}>
-                    Our master Karigars hand-forge antiques and custom bridal sets, preserving heritage metal carving techniques while integrating modern shapes.
-                  </p>
+            {/* Right Column: Narrative & Stats */}
+            <div style={{ gridColumn: isMobile ? '1 / -1' : '6 / span 7', textAlign: 'left' }}>
+              <span className="label-caps" style={{ color: 'var(--color-accent-gold)', marginBottom: '16px', display: 'block', letterSpacing: '0.2em' }}>SINCE 1977</span>
+              <h2 className="headline-md" style={{ marginBottom: '24px', fontSize: '32px', color: 'var(--color-text-primary)' }}>
+                A Legacy Built on <br />
+                <span className="gold-text" style={{ color: 'var(--color-accent-gold)', fontStyle: 'italic', fontFamily: 'var(--font-serif)', fontWeight: 400 }}>Trust & Beauty</span>
+              </h2>
+              
+              <p className="body-md" style={{ color: 'var(--color-text-secondary)', marginBottom: '20px', lineHeight: '1.8', fontSize: '15px', fontWeight: 300 }}>
+                At New Gayatri Jewellers, we believe jewellery is not just worn — it is lived. Since 1977, our name has been synonymous with artistry, integrity, and timeless grace. From a single showroom to four thriving stores across India, our journey is a story of love for craft and devotion to our customers.
+              </p>
+              
+              <p className="body-md" style={{ color: 'var(--color-text-secondary)', marginBottom: '40px', lineHeight: '1.8', fontSize: '15px', fontWeight: 300 }}>
+                Every piece that leaves our workshop carries the soul of our master artisans — craftsmen who have honed their skills across generations, blending ancient Jadau traditions with the elegance of contemporary design.
+              </p>
+
+              {/* Stats Grid */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: '24px',
+                borderTop: '1px solid rgba(229, 197, 144, 0.1)',
+                paddingTop: '32px'
+              }}>
+                <div style={{ textAlign: 'left' }}>
+                  <div style={{ fontSize: '32px', fontFamily: 'var(--font-serif)', color: 'var(--color-accent-gold)', fontWeight: 600 }}>25+</div>
+                  <div style={{ fontSize: '11px', fontFamily: 'var(--font-sans)', color: 'var(--color-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: '4px' }}>Years Excellence</div>
+                </div>
+                <div style={{ textAlign: 'left' }}>
+                  <div style={{ fontSize: '32px', fontFamily: 'var(--font-serif)', color: 'var(--color-accent-gold)', fontWeight: 600 }}>5+</div>
+                  <div style={{ fontSize: '11px', fontFamily: 'var(--font-sans)', color: 'var(--color-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: '4px' }}>Thousand+ Customers</div>
+                </div>
+                <div style={{ textAlign: 'left' }}>
+                  <div style={{ fontSize: '32px', fontFamily: 'var(--font-serif)', color: 'var(--color-accent-gold)', fontWeight: 600 }}>1+</div>
+                  <div style={{ fontSize: '11px', fontFamily: 'var(--font-sans)', color: 'var(--color-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: '4px' }}>Store Location</div>
+                </div>
+                <div style={{ textAlign: 'left' }}>
+                  <div style={{ fontSize: '32px', fontFamily: 'var(--font-serif)', color: 'var(--color-accent-gold)', fontWeight: 600 }}>100%</div>
+                  <div style={{ fontSize: '11px', fontFamily: 'var(--font-sans)', color: 'var(--color-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: '4px' }}>BIS Certified</div>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </section>
@@ -125,7 +170,7 @@ export const LegacyPage: React.FC<LegacyPageProps> = ({ setView }) => {
       <section className="section" style={{ backgroundColor: 'var(--color-surface-card)', borderTop: '1px solid rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.03)', padding: '100px 0' }}>
         <div className="container" style={{ maxWidth: '800px' }}>
           <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-            <span className="label-caps" style={{ color: 'var(--color-accent-gold)', display: 'block', marginBottom: '16px' }}>Our History</span>
+            <span className="label-caps" style={{ color: 'var(--color-accent-gold)', display: 'block', marginBottom: '16px' }}>OUR HISTORY</span>
             <h2 className="headline-md" style={{ margin: 0 }}>Milestones of Success</h2>
           </div>
 
