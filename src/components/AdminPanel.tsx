@@ -5,7 +5,7 @@ import {
   Settings as SettingsIcon
 } from 'lucide-react';
 import type { Product } from './ProductCatalog';
-import { uploadImage, isSupabaseConfigured } from '../lib/supabase';
+import { uploadImage, isSupabaseConfigured, generateUUID } from '../lib/supabase';
 
 interface Rates {
   gold22k: number;
@@ -298,6 +298,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     e.preventDefault();
     setSettings({
       heroBanners: settingsBanners,
+      heroMobileBanners: settingsBanners, // Keep mobile banners identical to desktop banners
       heroTitle: '',
       heroSubtitle: '',
       collectionsBridalImage: '',
@@ -378,7 +379,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     const targetImage = prodImage || '/ring.png'; // default fallback
 
     const prodData: Product = {
-      id: editingProduct ? editingProduct.id : Date.now().toString(),
+      id: editingProduct ? editingProduct.id : generateUUID(),
       title: prodTitle,
       itemCode: prodCode,
       category: prodCategory,

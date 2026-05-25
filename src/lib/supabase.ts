@@ -27,9 +27,24 @@ export const getImageUrl = (path: string): string => {
   }
   if (isSupabaseConfigured) {
     const cleanPath = path.startsWith('/') ? path.substring(1) : path;
-    return `${supabaseUrl}/storage/v1/object/public/gallery/${cleanPath}`;
+    const supabaseFolders = ['products/', 'banners/', 'banners_mobile/', 'announcement/', 'shop/', 'models/', 'test/'];
+    const isSupabasePath = supabaseFolders.some(folder => cleanPath.startsWith(folder));
+    if (isSupabasePath) {
+      return `${supabaseUrl}/storage/v1/object/public/gallery/${cleanPath}`;
+    }
   }
   return path;
+};
+
+export const generateUUID = (): string => {
+  if (typeof window !== 'undefined' && window.crypto?.randomUUID) {
+    return window.crypto.randomUUID();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
 };
 
 export const uploadImage = async (file: File | Blob, path: string): Promise<string> => {
