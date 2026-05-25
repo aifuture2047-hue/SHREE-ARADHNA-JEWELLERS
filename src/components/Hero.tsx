@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { getImageUrl } from '../lib/supabase';
 
 interface HeroProps {
@@ -11,14 +12,35 @@ export const Hero: React.FC<HeroProps> = ({
   banners = [],
   onMilestoneClick
 }) => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
   const defaultBanners = [
     '/hero_banner.jpg',
     '/hero_desktop.jpg'
   ];
 
-  // Get the single active banner image
+  // Get active banners
   const activeBanners = banners.filter(banner => banner && banner.trim() !== '');
-  const bannerImage = activeBanners.length > 0 ? activeBanners[0] : defaultBanners[0];
+  const slides = activeBanners.length > 0 ? activeBanners : defaultBanners;
+
+  // Auto-play slideshow timer
+  useEffect(() => {
+    if (slides.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentSlide(prev => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [slides.length]);
+
+  const handlePrev = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentSlide(prev => (prev - 1 + slides.length) % slides.length);
+  };
+
+  const handleNext = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentSlide(prev => (prev + 1) % slides.length);
+  };
 
   const handleScroll = (elementId: string) => {
     const element = document.getElementById(elementId);
@@ -69,12 +91,25 @@ export const Hero: React.FC<HeroProps> = ({
         <div className="hero-art-side">
           <div className="hero-art-frame-wrapper">
             <div className="hero-art-frame">
-              <div className="hero-art-inner-bezel">
-                <img
-                  src={getImageUrl(bannerImage)}
-                  alt="Curated jewellery showcase"
-                  className="hero-art-image"
-                />
+              <div className="hero-art-inner-bezel" style={{ display: 'grid', position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
+                {slides.map((slide, index) => (
+                  <img
+                    key={index}
+                    src={getImageUrl(slide)}
+                    alt={`Curated jewellery showcase ${index + 1}`}
+                    className="hero-art-image"
+                    style={{
+                      gridArea: '1 / 1',
+                      opacity: currentSlide === index ? 1 : 0,
+                      transition: 'opacity 1s ease-in-out',
+                      zIndex: currentSlide === index ? 2 : 1,
+                      objectFit: 'contain',
+                      width: '100%',
+                      height: '100%',
+                      display: 'block'
+                    }}
+                  />
+                ))}
               </div>
               {/* Gold corners */}
               <div className="frame-corner top-left"></div>
@@ -87,6 +122,42 @@ export const Hero: React.FC<HeroProps> = ({
         </div>
 
       </div>
+
+      {/* Slider Left Arrow */}
+      {slides.length > 1 && (
+        <button
+          className="hero-slider-arrow left"
+          onClick={handlePrev}
+          aria-label="Previous banner"
+        >
+          <ChevronLeft size={24} />
+        </button>
+      )}
+
+      {/* Slider Right Arrow */}
+      {slides.length > 1 && (
+        <button
+          className="hero-slider-arrow right"
+          onClick={handleNext}
+          aria-label="Next banner"
+        >
+          <ChevronRight size={24} />
+        </button>
+      )}
+
+      {/* Slider Pagination Dots */}
+      {slides.length > 1 && (
+        <div className="hero-slider-dots">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              className={`hero-slider-dot ${currentSlide === index ? 'active' : ''}`}
+              onClick={() => setCurrentSlide(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 };

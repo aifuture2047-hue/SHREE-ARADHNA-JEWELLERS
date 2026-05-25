@@ -124,10 +124,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   // App settings form state
   const [settingsBanners, setSettingsBanners] = useState<string[]>(() => {
     const arr = [...(settings?.heroBanners || [])];
-    while (arr.length < 1) {
-      arr.push(settings?.heroBannerUrl || '/hero_desktop.jpg');
+    if (arr.length === 0 && settings?.heroBannerUrl) {
+      arr.push(settings.heroBannerUrl);
     }
-    return arr.slice(0, 1);
+    while (arr.length < 4) {
+      arr.push('');
+    }
+    return arr.slice(0, 4);
   });
   
 
@@ -836,11 +839,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 {/* Main Banners Section (Desktop) */}
                 <div style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '24px', marginBottom: '24px' }}>
                   <h3 className="headline-sm" style={{ fontSize: '16px', color: 'var(--color-accent-gold)', marginBottom: '16px' }}>Homepage Hero Banner</h3>
-                  <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>Upload a single main banner image for the homepage hero section.</p>
+                  <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>Upload up to 4 banner images for the homepage hero section.</p>
                   
-                  {[0].map(idx => (
+                  {[0, 1, 2, 3].map(idx => (
                     <div key={idx} style={{ marginBottom: '20px', display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-secondary)', minWidth: '80px' }}>Main Banner</span>
+                      <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text-secondary)', minWidth: '80px' }}>Banner {idx + 1}</span>
                       
                       <input 
                         type="file" 
