@@ -181,7 +181,7 @@ export const LegacyPage: React.FC<LegacyPageProps> = ({ setView }) => {
               </h2>
               
               <p className="body-md" style={{ color: 'var(--color-text-secondary)', marginBottom: '20px', lineHeight: '1.8', fontSize: '15px', fontWeight: 300 }}>
-                Under the guidance of our current proprietor, <strong>Soni Dineshkumar Keshavlal</strong>, and the forward-looking vision of <strong>Umang Jain</strong>, New Gayatri Jewellers continues to pioneer trust and absolute transparency in bullion and design.
+                Under the guidance of our current proprietor, <strong>Soni Dineshkumar Keshavlal</strong>, and the forward-looking vision of <strong>PRIYANK D SONI</strong>, New Gayatri Jewellers continues to pioneer trust and absolute transparency in bullion and design.
               </p>
               
               <p className="body-md" style={{ color: 'var(--color-text-secondary)', marginBottom: '20px', lineHeight: '1.8', fontSize: '15px', fontWeight: 300 }}>
