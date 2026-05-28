@@ -17,7 +17,7 @@ const TIMELINE: TimelineItem[] = [
   {
     year: '1977',
     title: 'The Genesis of Trust',
-    description: 'Founded in Main Bazar, Rapar, Gujarat. Built on a singular mission: to deliver absolute metal purity and honest craftsmanship to families across Kutch.',
+    description: 'Founded by our beloved grandfather, Soni Keshavlal, in Main Bazar, Rapar, Gujarat. Built on a singular mission: to deliver absolute metal purity and honest, handcrafted craftsmanship to families across Kutch.',
     icon: <BookOpen size={20} />
   },
   {
