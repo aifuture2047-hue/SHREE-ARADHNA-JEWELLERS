@@ -64,8 +64,8 @@ export const Header: React.FC<HeaderProps> = ({ currentView, setView }) => {
               src={logoImg} 
               alt="New Gayatri Jewellers Logo" 
               style={{ 
-                height: '100px', 
-                width: '100px', 
+                height: '90px', 
+                width: '90px', 
                 objectFit: 'contain'
               }} 
             />
