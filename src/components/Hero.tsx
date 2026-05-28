@@ -59,7 +59,7 @@ export const Hero: React.FC<HeroProps> = ({
             
             <div className="curator-divider"></div>
             
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '12px', marginBottom: '16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', marginBottom: '16px', width: '100%', textAlign: 'center' }}>
               <img 
                 src={logoImg} 
                 alt="New Gayatri Logo" 
@@ -69,9 +69,9 @@ export const Hero: React.FC<HeroProps> = ({
                   objectFit: 'contain'
                 }} 
               />
-              <div>
-                <h2 className="curator-brand-title" style={{ margin: 0 }}>New Gayatri</h2>
-                <p className="curator-brand-subtitle" style={{ margin: 0, marginTop: '4px' }}>Est. 1977 | Heritage Bullion</p>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <h2 className="curator-brand-title" style={{ margin: 0, textAlign: 'center' }}>New Gayatri</h2>
+                <p className="curator-brand-subtitle" style={{ margin: 0, marginTop: '4px', textAlign: 'center' }}>Est. 1977 | Heritage Bullion</p>
               </div>
             </div>
             
