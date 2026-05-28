@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { getImageUrl } from '../lib/supabase';
+import logoImg from '../assets/logo.png';
 
 interface HeroProps {
   banners?: string[];
@@ -23,31 +24,26 @@ export const Hero: React.FC<HeroProps> = ({
   const activeBanners = banners.filter(banner => banner && banner.trim() !== '');
   const slides = activeBanners.length > 0 ? activeBanners : defaultBanners;
 
+  const total = slides.length;
+
   // Auto-play slideshow timer
   useEffect(() => {
-    if (slides.length <= 1) return;
+    if (total <= 1) return;
     const interval = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % slides.length);
+      setCurrentSlide(prev => (prev + 1) % total);
     }, 5000);
     return () => clearInterval(interval);
-  }, [slides.length]);
+  }, [total]);
 
-  const handlePrev = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCurrentSlide(prev => (prev - 1 + slides.length) % slides.length);
+  const handlePrev = () => setCurrentSlide(prev => (prev - 1 + total) % total);
+  const handleNext = () => setCurrentSlide(prev => (prev + 1) % total);
+
+  const handleScroll = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleNext = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCurrentSlide(prev => (prev + 1) % slides.length);
-  };
-
-  const handleScroll = (elementId: string) => {
-    const element = document.getElementById(elementId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  if (slides.length === 0) return null;
 
   return (
     <section className="hero-gallery-sec">
@@ -65,7 +61,7 @@ export const Hero: React.FC<HeroProps> = ({
             
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '12px', marginBottom: '16px' }}>
               <img 
-                src="/src/assets/logo.png" 
+                src={logoImg} 
                 alt="New Gayatri Logo" 
                 style={{ 
                   height: '60px', 

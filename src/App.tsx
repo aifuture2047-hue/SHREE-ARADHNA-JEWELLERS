@@ -14,6 +14,7 @@ import { WhatsAppFAB } from './components/WhatsAppFAB';
 import { OurModels } from './components/OurModels';
 import { LegacyPage } from './components/LegacyPage';
 import { supabase, isSupabaseConfigured } from './lib/supabase';
+import logoImg from './assets/logo.png';
 
 interface Rates {
   gold22k: number;
@@ -445,7 +446,7 @@ function App() {
           <div className="footer-brand-wrap" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <img 
-                src="/src/assets/logo.png" 
+                src={logoImg} 
                 alt="New Gayatri Jewellers Logo" 
                 style={{ 
                   height: '36px', 

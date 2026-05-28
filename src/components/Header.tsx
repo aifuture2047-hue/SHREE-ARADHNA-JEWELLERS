@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
+import logoImg from '../assets/logo.png';
 
 interface HeaderProps {
   currentView: 'storefront' | 'admin' | 'legacy';
@@ -29,15 +30,16 @@ export const Header: React.FC<HeaderProps> = ({ currentView, setView }) => {
   };
 
   return (
-    <header className="sticky-header">
+    <header className="header-sec">
       <div className="container header-container">
-        {/* Left Side: Navigation Links */}
-        <nav className="header-nav">
+        {/* Left Side: Navigation Links (Minimal caps sans-serif) */}
+        <nav className="header-nav" aria-label="Main Navigation">
           {currentView === 'storefront' ? (
             <>
               <a href="#collections" onClick={(e) => { e.preventDefault(); handleNavClick('collections'); }}>Collections</a>
-              <a href="#contact" onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}>Bespoke</a>
+              <a href="#market-dashboard" onClick={(e) => { e.preventDefault(); handleNavClick('market-dashboard'); }}>Live Rates</a>
               <a href="#legacy" onClick={(e) => { e.preventDefault(); setView('legacy'); }}>Our Legacy</a>
+              <a href="#contact" onClick={(e) => { e.preventDefault(); handleNavClick('contact'); }}>Consultation</a>
             </>
           ) : (
             <button 
@@ -59,7 +61,7 @@ export const Header: React.FC<HeaderProps> = ({ currentView, setView }) => {
             style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
           >
             <img 
-              src="/src/assets/logo.png" 
+              src={logoImg} 
               alt="New Gayatri Jewellers Logo" 
               style={{ 
                 height: '32px', 
