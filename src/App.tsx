@@ -451,11 +451,7 @@ function App() {
                 style={{ 
                   height: '36px', 
                   width: '36px', 
-                  objectFit: 'cover', 
-                  borderRadius: '50%', 
-                  border: '1px solid var(--color-accent-gold)',
-                  backgroundColor: '#fff',
-                  padding: '2px'
+                  objectFit: 'contain'
                 }} 
               />
               <h3 className="headline-sm footer-title" style={{ color: 'var(--color-text-primary)', margin: 0 }}>NEW GAYATRI JEWELLERS</h3>

@@ -66,11 +66,7 @@ export const Header: React.FC<HeaderProps> = ({ currentView, setView }) => {
               style={{ 
                 height: '32px', 
                 width: '32px', 
-                objectFit: 'cover', 
-                borderRadius: '50%', 
-                border: '1px solid var(--color-accent-gold)',
-                backgroundColor: '#fff',
-                padding: '2px'
+                objectFit: 'contain'
               }} 
             />
             <span className="brand-title-serif">New Gayatri Jewellers</span>

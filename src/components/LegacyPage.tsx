@@ -75,13 +75,8 @@ export const LegacyPage: React.FC<LegacyPageProps> = ({ setView }) => {
             style={{ 
               height: '70px', 
               width: '70px', 
-              objectFit: 'cover', 
-              borderRadius: '50%', 
-              border: '1.5px solid var(--color-accent-gold)',
-              backgroundColor: '#fff',
-              padding: '3px',
-              marginBottom: '20px',
-              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)'
+              objectFit: 'contain',
+              marginBottom: '20px'
             }} 
           />
           <span className="label-caps" style={{ color: 'var(--color-accent-gold)', fontSize: '11px', letterSpacing: '0.25em', display: 'block', marginBottom: '16px' }}>

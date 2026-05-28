@@ -66,12 +66,7 @@ export const Hero: React.FC<HeroProps> = ({
                 style={{ 
                   height: '60px', 
                   width: '60px', 
-                  objectFit: 'cover', 
-                  borderRadius: '50%', 
-                  border: '1.5px solid var(--color-accent-gold)',
-                  backgroundColor: '#fff',
-                  padding: '3px',
-                  boxShadow: '0 8px 16px rgba(0, 0, 0, 0.4)'
+                  objectFit: 'contain'
                 }} 
               />
               <div>
