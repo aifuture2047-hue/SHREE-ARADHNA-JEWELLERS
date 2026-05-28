@@ -64,8 +64,8 @@ export const Hero: React.FC<HeroProps> = ({
                 src={logoImg} 
                 alt="New Gayatri Logo" 
                 style={{ 
-                  height: '60px', 
-                  width: '60px', 
+                  height: '100px', 
+                  width: '100px', 
                   objectFit: 'contain'
                 }} 
               />
