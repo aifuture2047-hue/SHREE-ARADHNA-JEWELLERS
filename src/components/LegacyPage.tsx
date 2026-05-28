@@ -24,19 +24,19 @@ const TIMELINE: TimelineItem[] = [
   {
     year: '2005',
     title: 'Artisan Integration',
-    description: 'Began hosting exclusive master-craftsmen design summits in Rapar to forge heritage gold shapes locally.',
-    icon: <Sparkles size={20} />
-  },
-  {
-    year: '2015',
-    title: 'Digital Transparency & Bullion',
-    description: 'Pioneered immediate public bullion ledger pricing on-site, solidifying our promise of 100% certified hallmarked purity.',
+    description: 'Merged generations of local Karigars (principal artisans) directly into our workspace. Began creating our signature handcrafted antique bridal sets.',
     icon: <Award size={20} />
   },
   {
-    year: '2023',
-    title: 'The Modern Era',
-    description: 'Inaugurated our multi-level architectural luxury gallery showroom in Rapar, setting a state-of-the-art benchmark for luxury retail in Kutch.',
+    year: '2015',
+    title: 'Modern Architectural Patterns',
+    description: 'Blended geometric structural styling with luxury diamond cuts. Redefined daily wear gold chains and solitaire settings for modern tastes.',
+    icon: <Sparkles size={20} />
+  },
+  {
+    year: '2026',
+    title: 'The Digital Patron Gallery',
+    description: 'Extended physical gallery features into a dynamic virtual workspace, enabling secure custom catalog requests while maintaining 100% hallmarked security.',
     icon: <Clock size={20} />
   }
 ];
