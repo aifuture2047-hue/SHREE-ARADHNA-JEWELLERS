@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Award, Sparkles, BookOpen, Clock } from 'lucide-react';
 import mentorPortrait from '../assets/mentor_portrait.jpg';
+import leadersPortrait from '../assets/leaders_portrait.jpg';
 
 interface LegacyPageProps {
   setView: (view: 'storefront' | 'admin' | 'legacy') => void;
@@ -159,6 +160,65 @@ export const LegacyPage: React.FC<LegacyPageProps> = ({ setView }) => {
                   <div style={{ fontSize: '32px', fontFamily: 'var(--font-serif)', color: 'var(--color-accent-gold)', fontWeight: 600 }}>100%</div>
                   <div style={{ fontSize: '11px', fontFamily: 'var(--font-sans)', color: 'var(--color-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: '4px' }}>BIS Certified</div>
                 </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* Current & Future Leaders Section */}
+      <section className="section" style={{ padding: '80px 0', borderTop: '1px solid rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+        <div className="container">
+          <div className="grid-12" style={{ gap: isMobile ? '40px' : '60px', alignItems: 'center' }}>
+            
+            {/* Left Column: Narrative */}
+            <div style={{ gridColumn: isMobile ? '1 / -1' : '1 / span 7', textAlign: 'left', order: isMobile ? 2 : 1 }}>
+              <span className="label-caps" style={{ color: 'var(--color-accent-gold)', marginBottom: '16px', display: 'block', letterSpacing: '0.2em' }}>GENERATIONS OF EXCELLENCE</span>
+              <h2 className="headline-md" style={{ marginBottom: '24px', fontSize: '32px', color: 'var(--color-text-primary)' }}>
+                Current & Future <br />
+                <span className="gold-text" style={{ color: 'var(--color-accent-gold)', fontStyle: 'italic', fontFamily: 'var(--font-serif)', fontWeight: 400 }}>Leadership</span>
+              </h2>
+              
+              <p className="body-md" style={{ color: 'var(--color-text-secondary)', marginBottom: '20px', lineHeight: '1.8', fontSize: '15px', fontWeight: 300 }}>
+                Under the guidance of our current proprietor, <strong>Soni Dineshkumar Keshavlal</strong>, and the forward-looking vision of <strong>Umang Jain</strong>, New Gayatri Jewellers continues to pioneer trust and absolute transparency in bullion and design.
+              </p>
+              
+              <p className="body-md" style={{ color: 'var(--color-text-secondary)', marginBottom: '20px', lineHeight: '1.8', fontSize: '15px', fontWeight: 300 }}>
+                As standard-bearers of our family's golden heritage, we protect Soni Keshavlal's principal values: 100% BIS hallmarked purity, verified market pricing transparency, and peerless Karigar curation. Simultaneously, we are expanding our design catalog, digital preview features, and custom consultations to cater to modern global tastes.
+              </p>
+            </div>
+
+            {/* Right Column: Leaders Sketch Portrait */}
+            <div style={{ gridColumn: isMobile ? '1 / -1' : '8 / span 5', display: 'flex', justifyContent: 'center', order: isMobile ? 1 : 2 }}>
+              <div style={{
+                position: 'relative',
+                width: '100%',
+                maxWidth: '380px',
+                border: '1px solid var(--color-border-subtle)',
+                padding: '12px',
+                backgroundColor: 'var(--color-surface-card)',
+                boxShadow: '0 15px 30px rgba(0,0,0,0.5)'
+              }}>
+                <div style={{ border: '1px solid rgba(229, 197, 144, 0.2)', overflow: 'hidden' }}>
+                  <img
+                    src={leadersPortrait}
+                    alt="Current and Future Custodians of New Gayatri Jewellers"
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                      display: 'block',
+                      objectFit: 'contain',
+                      backgroundColor: '#ffffff',
+                      filter: 'contrast(1.05)'
+                    }}
+                  />
+                </div>
+                {/* Elegant corner accents */}
+                <div className="frame-corner top-left" style={{ top: '6px', left: '6px' }}></div>
+                <div className="frame-corner top-right" style={{ top: '6px', right: '6px' }}></div>
+                <div className="frame-corner bottom-left" style={{ bottom: '6px', left: '6px' }}></div>
+                <div className="frame-corner bottom-right" style={{ bottom: '6px', right: '6px' }}></div>
               </div>
             </div>
 
