@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Award, Sparkles, BookOpen, Clock } from 'lucide-react';
-import { getImageUrl } from '../lib/supabase';
+import foundersPortrait from '../assets/founders_portrait.jpg';
 
 interface LegacyPageProps {
   setView: (view: 'storefront' | 'admin' | 'legacy') => void;
@@ -99,8 +99,8 @@ export const LegacyPage: React.FC<LegacyPageProps> = ({ setView }) => {
               }}>
                 <div style={{ border: '1px solid rgba(229, 197, 144, 0.2)', overflow: 'hidden' }}>
                   <img
-                    src={getImageUrl('/founder_portrait.jpg')}
-                    alt="Founder of New Gayatri Jewellers"
+                    src={foundersPortrait}
+                    alt="Founders of New Gayatri Jewellers"
                     style={{
                       width: '100%',
                       height: 'auto',
