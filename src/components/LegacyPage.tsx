@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Award, Sparkles, BookOpen, Clock } from 'lucide-react';
-import foundersPortrait from '../assets/founders_portrait.jpg';
+import mentorPortrait from '../assets/mentor_portrait.jpg';
 
 interface LegacyPageProps {
   setView: (view: 'storefront' | 'admin' | 'legacy') => void;
@@ -99,8 +99,8 @@ export const LegacyPage: React.FC<LegacyPageProps> = ({ setView }) => {
               }}>
                 <div style={{ border: '1px solid rgba(229, 197, 144, 0.2)', overflow: 'hidden' }}>
                   <img
-                    src={foundersPortrait}
-                    alt="Founders of New Gayatri Jewellers"
+                    src={mentorPortrait}
+                    alt="Soni Keshavlal - Founder & Mentor of New Gayatri Jewellers"
                     style={{
                       width: '100%',
                       height: 'auto',
@@ -121,7 +121,7 @@ export const LegacyPage: React.FC<LegacyPageProps> = ({ setView }) => {
 
             {/* Right Column: Narrative & Stats */}
             <div style={{ gridColumn: isMobile ? '1 / -1' : '6 / span 7', textAlign: 'left' }}>
-              <span className="label-caps" style={{ color: 'var(--color-accent-gold)', marginBottom: '16px', display: 'block', letterSpacing: '0.2em' }}>SINCE 1977</span>
+              <span className="label-caps" style={{ color: 'var(--color-accent-gold)', marginBottom: '16px', display: 'block', letterSpacing: '0.2em' }}>SINCE 1977 | OUR MENTOR</span>
               <h2 className="headline-md" style={{ marginBottom: '24px', fontSize: '32px', color: 'var(--color-text-primary)' }}>
                 A Legacy Built on <br />
                 <span className="gold-text" style={{ color: 'var(--color-accent-gold)', fontStyle: 'italic', fontFamily: 'var(--font-serif)', fontWeight: 400 }}>Trust & Beauty</span>
