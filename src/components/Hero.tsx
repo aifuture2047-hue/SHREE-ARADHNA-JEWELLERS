@@ -63,8 +63,26 @@ export const Hero: React.FC<HeroProps> = ({
             
             <div className="curator-divider"></div>
             
-            <h2 className="curator-brand-title">New Gayatri</h2>
-            <p className="curator-brand-subtitle">Est. 1977 | Heritage Bullion</p>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '12px', marginBottom: '16px' }}>
+              <img 
+                src="/src/assets/logo.png" 
+                alt="New Gayatri Logo" 
+                style={{ 
+                  height: '60px', 
+                  width: '60px', 
+                  objectFit: 'cover', 
+                  borderRadius: '50%', 
+                  border: '1.5px solid var(--color-accent-gold)',
+                  backgroundColor: '#fff',
+                  padding: '3px',
+                  boxShadow: '0 8px 16px rgba(0, 0, 0, 0.4)'
+                }} 
+              />
+              <div>
+                <h2 className="curator-brand-title" style={{ margin: 0 }}>New Gayatri</h2>
+                <p className="curator-brand-subtitle" style={{ margin: 0, marginTop: '4px' }}>Est. 1977 | Heritage Bullion</p>
+              </div>
+            </div>
             
             <p className="curator-narrative">
               Preserving ancient metal forging traditions and honest craftsmanship. Every ornament is certified BIS hallmarked to guarantee generational wealth.

@@ -442,9 +442,24 @@ function App() {
     <footer className="footer-sec">
       <div className="container">
         <div className="footer-grid">
-          <div className="footer-brand-wrap">
-            <h3 className="headline-sm footer-title" style={{ color: 'var(--color-text-primary)' }}>NEW GAYATRI JEWELLERS</h3>
-            <p className="body-md" style={{ color: 'var(--color-text-secondary)', fontSize: '14px', maxWidth: '360px' }}>
+          <div className="footer-brand-wrap" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <img 
+                src="/src/assets/logo.png" 
+                alt="New Gayatri Jewellers Logo" 
+                style={{ 
+                  height: '36px', 
+                  width: '36px', 
+                  objectFit: 'cover', 
+                  borderRadius: '50%', 
+                  border: '1px solid var(--color-accent-gold)',
+                  backgroundColor: '#fff',
+                  padding: '2px'
+                }} 
+              />
+              <h3 className="headline-sm footer-title" style={{ color: 'var(--color-text-primary)', margin: 0 }}>NEW GAYATRI JEWELLERS</h3>
+            </div>
+            <p className="body-md" style={{ color: 'var(--color-text-secondary)', fontSize: '14px', maxWidth: '360px', marginTop: 0 }}>
               Authentic heritage, modern architectural shapes, and verified bullion assets since inception. Designed for exclusive investment and beauty.
             </p>
           </div>

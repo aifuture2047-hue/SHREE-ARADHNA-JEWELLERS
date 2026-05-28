@@ -52,7 +52,25 @@ export const Header: React.FC<HeaderProps> = ({ currentView, setView }) => {
 
         {/* Center: Brand Identity Logo (Single line elegant serif) */}
         <div className="header-brand">
-          <a href="/" onClick={(e) => { e.preventDefault(); setView('storefront'); }} className="header-brand-link">
+          <a 
+            href="/" 
+            onClick={(e) => { e.preventDefault(); setView('storefront'); }} 
+            className="header-brand-link"
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
+          >
+            <img 
+              src="/src/assets/logo.png" 
+              alt="New Gayatri Jewellers Logo" 
+              style={{ 
+                height: '32px', 
+                width: '32px', 
+                objectFit: 'cover', 
+                borderRadius: '50%', 
+                border: '1px solid var(--color-accent-gold)',
+                backgroundColor: '#fff',
+                padding: '2px'
+              }} 
+            />
             <span className="brand-title-serif">New Gayatri Jewellers</span>
           </a>
         </div>
