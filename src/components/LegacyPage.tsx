@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Award, Sparkles, BookOpen, Clock } from 'lucide-react';
 import { getImageUrl } from '../lib/supabase';
-import logoImg from '../assets/logo.png';
 
 interface LegacyPageProps {
   setView: (view: 'storefront' | 'admin' | 'legacy') => void;
@@ -69,16 +68,7 @@ export const LegacyPage: React.FC<LegacyPageProps> = ({ setView }) => {
         }}
       >
         <div className="container" style={{ textAlign: 'center' }}>
-          <img 
-            src={logoImg} 
-            alt="New Gayatri Jewellers Logo" 
-            style={{ 
-              height: '100px', 
-              width: '100px', 
-              objectFit: 'contain',
-              marginBottom: '20px'
-            }} 
-          />
+
           <span className="label-caps" style={{ color: 'var(--color-accent-gold)', fontSize: '11px', letterSpacing: '0.25em', display: 'block', marginBottom: '16px' }}>
             OUR ROOTS & TIMELINE
           </span>
