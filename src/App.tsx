@@ -495,7 +495,7 @@ function App() {
               Admin Portal
             </a>
             <span style={{ opacity: 0.2 }}>|</span>
-            <span>MADE BY UNNAT JAIN | ALL RIGHTS RESERVED</span>
+            <span>ALL RIGHTS RESERVED</span>
           </span>
         </div>
       </div>
